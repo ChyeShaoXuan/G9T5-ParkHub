@@ -32,11 +32,15 @@
     <div class="container-fluid bg-warning p-3">
         <div class="container text-center">
         <img src="Logo.JPG" alt="...">
-        <form> <div class="input-group mb-3 my-4">
-            <span class="input-group-text bg-info" id="inputGroup-sizing-default">Input a search request</span>
-            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-            <button type="button" class="btn btn-primary">Submit</button>
-          </div></form>
+        <form id="searchForm">
+          <div class="input-group mb-3 my-4">
+              <span class="input-group-text bg-info" id="inputGroup-sizing-default">Input a search request</span>
+              <input type="text" class="form-control" id="locationInput" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+      </form>
+      
+          
     </div>
     
     </div>
@@ -44,6 +48,28 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
+    <script>
+      document.getElementById('searchForm').addEventListener('submit', function(event) {
+          event.preventDefault();  // Prevent the form from submitting in the traditional way
+      
+          var location = document.getElementById('locationInput').value;
+          
+          fetch('/locate', {  // Replace '/your-flask-endpoint' with your actual Flask route
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({location: location}),  // Send the location input as JSON
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log(data);  // Process the response data (e.g., display it on the page)
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+      });
+      </script>
+      
 </body>
 </html>

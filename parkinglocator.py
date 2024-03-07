@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from invokes import invoke_http
 import requests
 app = Flask(__name__)
 CORS(app)
@@ -9,6 +8,17 @@ CORS(app)
 ura_URL="https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Details"
 ura_headers={'AccessKey':'e61ff773-ba6b-4e89-aeda-759e0bc55604',
              'Token':'acedbp@khNkfP+wHJnk-U3475Prg9@MJ7fyET2e3-e5-YRe45E+H5HbTePceU@JebS2zvbFUZbAe95@C52FYfF+kffaTQ5yeaDD-'}
+
+@app.route('/locate', methods=['POST'])
+# def handle_location_request():
+#     data = request.json
+#     location = data.get('location')
+    
+#     # Perform your Geocoding and Nearby Search API calls here using the location
+
+#     # Dummy response for illustration
+#     response_data = {"message": "Results found", "results": []}
+#     return jsonify(response_data)
 
 
 
