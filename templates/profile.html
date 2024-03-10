@@ -1,0 +1,6 @@
+<!-- to overwrite the whatever inside block and endblock in homepage.html -->
+{% extends "home.html" %}
+{% block content %}
+    <h1>This is the profile page!</h1>
+    <h1 style="color:red">Name: {{ name }}</h1>
+{% endblock %}

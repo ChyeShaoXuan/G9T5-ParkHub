@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomePage</title>
+        <!-- Typewriter CSS -->
+        <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+</head>
+<body>
+    <section>
+        <div class="">
+            <!-- Typewriter Animation -->
+            <div class="h-48"></div>
+            <div class="h-40  text-center items-center typewriter">
+                <!-- Element to contain animated typing -->
+                <h1 class=" p-10 md:p-0 text-6xl sm:text-7xl font-semibold">Welcome <span class="autotype"></span></h1>
+
+                <!-- Setup and start animation! -->
+                <script>
+                    var typed = new Typed('.autotype', {
+                        strings: [
+                            '<span class="autotype">, Marcus!</span>', // Red color
+                            '<span class="blue-text"> to London.</span>', // Blue color
+                            '<span class="green-text"> to LeadenHall.</span>' // Green color
+                        ],
+                        typeSpeed: 100,
+                        backSpeed: 100,
+                        loop: true,
+                        showCursor: false // Optional: Hide the cursor
+                    });
+                </script>
+                
+            </div>
+        </div>
+    </section>
+
+    <script 
+        type="text/javascript" 
+        src="{{ url_for('static', filename='homepage.js') }}">
+    </script>
+    
+    <!-- Typewriter JS -->
+    <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+</body>
+</html>
