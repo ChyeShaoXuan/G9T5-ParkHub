@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Connect to Google Maps API -->
+    <script
+      async src="https://maps.googleapis.com/maps/api/js?key={{ gm_api_key }}&libraries=places&callback=initMap"
+    ></script>
+    
+</head>
+<body>
+    <h2>Userlocation: <br></h2>
+    <div id="lat">
+        lat: 
+    </div>
+
+    <div id="lng">
+        lng: 
+    </div>
+
+    <br>
+
+    <h1>top 10 places:</h1>
+    <p id="top10"></p>
+    
+
+    <script src=" {{ url_for('static', filename='js/getlocation.js') }}"></script>
+</body>
+</html>
