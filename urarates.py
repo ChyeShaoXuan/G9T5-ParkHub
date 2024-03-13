@@ -83,7 +83,7 @@ def insert_data_to_mysql(data, db_config):
 # API URL
 api_url = 'https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Details'
 access_key = '04560d6a-1e36-4e14-80bf-85616c85510f'
-token = 'uceZ8nwHedb-8TppUA0@8s6+48N4u85N4q04c8fn-b2m@b-0mTfS+fkekRsX6fT6J-64-60P602@R6as39EP76b@1m843cwRfM6A'
+token = '26au+nfJfdRV76Mc2w85Fd436PCerF181xd+pc6DrF8e+55u-pC4vbzvWfb@54MtBke0fbkCcPA8QRr04jzYfcK58UXF8JTerc4p'
 user_agent = 'PostmanRuntime/7.36.3'
 cookie = '__nxquid=HOIH8mjcscbjbYyu/M4fhlrXabqh+A==0014'
 

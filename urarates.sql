@@ -15,3 +15,5 @@ CREATE TABLE IF NOT EXISTS ura_rates (
     startTime TIME,
     endTime TIME
 );
+
+
