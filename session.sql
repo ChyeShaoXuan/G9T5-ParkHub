@@ -28,22 +28,11 @@ CREATE TABLE IF NOT EXISTS `session` (
   `endtime` datetime NOT NULL,
   `ppCode` varchar(5) NOT NULL,
   `userID` int NOT NULL,
-  PRIMARY KEY (`sessionID`),
-  FOREIGN KEY (userID) REFERENCES User(userID)
+  `notifAllowed` boolean NOT NULL,
+  PRIMARY KEY (`sessionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --
--- -- Dumping data for table `book`
--- --
+INSERT INTO `session` (`sessionID`, `starttime`, `endtime`, `ppCode`, `userID`, `notifAllowed`) 
+VALUES (NULL, '2024-03-15 07:02:37.000000', '2024-03-15 07:02:37.000000', '12', '2', '1');
 
--- INSERT INTO `user` (`name`, `email`, `password`, `phoneNo`, `notifAllowed`) VALUES
--- ('Amy Chan', 'amychan@gmail.com', 'iloveamy1', '91237789', False),
--- ('Ben Lim', 'benlim@gmail.com', 'weatherhot8', '87734672', False),
--- ('Chan Jun Jie', 'chanjunjie@gmail.com', 'iamcjj00', '90013008', False),
--- ('Daphne Tan', 'daphnetan@gmail.com', 'nyc88brooklyn', '97653303', False),
--- ('Evan Teo', 'evanteo@gmail.com', 'evanoet90', '81919089', False);
--- COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
