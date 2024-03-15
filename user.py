@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.exc import IntegrityError
 from os import environ
 
 app = Flask(__name__)
@@ -26,27 +25,16 @@ class User(db.Model):
     phoneNo = db.Column(db.Integer, nullable=False)
 
 
-    # def __init__(self, userID, name, email, password, phoneNo, notifAllowed):
-    #     self.userID = userID
-    #     self.name = name
-    #     self.email = email
-    #     self.password = password
-    #     self.phoneNo = phoneNo
-    #     self.notifAllowed = notifAllowed
-
-
-    # def json(self):
-    #     return {"userID": self.userID, "name": self.name, "email": self.email, "password": self.password, "phoneNo": self.phoneNo, "notifAllowed": self.notifAllowed}
+    def __init__(self, name, email, password, phoneNo):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.phoneNo = phoneNo
 
 
     def json(self):
-        return {
-            "userID": self.userID,
-            "name": self.name,
-            "email": self.email,
-            "password": self.password,
-            "phoneNo": self.phoneNo,
-        }
+        return {"userID": self.userID, "name": self.name, "email": self.email, "password": self.password, "phoneNo": self.phoneNo}
+
 
 
 @app.route("/user")
@@ -70,6 +58,7 @@ def get_all():
         }
     ), 404
 
+
 @app.route("/user/<int:userID>")
 def find_by_userID(userID):
     user = db.session.scalars(
@@ -92,6 +81,7 @@ def find_by_userID(userID):
         }
     ), 404
 
+
 @app.route("/user", methods=['POST'])
 def create_user():
 
@@ -107,22 +97,20 @@ def create_user():
     try:
         db.session.add(user)
         db.session.commit()
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred creating the user."
+            }
+        ), 500
 
-    except IntegrityError as e:
-        db.session.rollback()
-        return jsonify({"code": 400, 
-                        "message": "Integrity Error: " + str(e)}
-                        ), 400
-    
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"code": 500, 
-                        "message": "An error occurred creating the user: " + str(e)}
-                        ), 500
-
-    return jsonify({"code": 201, 
-                    "data": user.json()}
-                    ), 201
+    return jsonify(
+        {
+            "code": 201,
+            "data": user.json()
+        }
+    ), 201
 
 
 @app.route("/user/<int:user_id>", methods=['PUT'])
@@ -133,7 +121,9 @@ def update_user(user_id):
     user = User.query.get(user_id)
 
     if user is None:
-        return jsonify({"code": 404, "message": "User not found."}), 404
+        return jsonify({"code": 404,
+                        "message": "User not found."}
+                    ), 404
 
     # Update user attributes
     for key, value in data.items():
@@ -141,20 +131,20 @@ def update_user(user_id):
 
     try:
         db.session.commit()
-    except IntegrityError as e:
-        db.session.rollback()
-        return jsonify({"code": 400, 
-                        "message": "Integrity Error: " + str(e)}
-                        ), 400
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"code": 500, 
-                        "message": "An error occurred updating the user: " + str(e)}
-                        ), 500
+    except:
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred updating the user."
+            }
+        ), 500
 
-    return jsonify({"code": 200, 
-                    "message": "User updated successfully."}
-                    ), 200
+    return jsonify(
+        {
+            "code": 201,
+            "data": user.json()
+        }
+    ), 201
 
 
 if __name__ == '__main__':
