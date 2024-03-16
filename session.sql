@@ -11,7 +11,7 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `session`
---
+--a
 CREATE DATABASE IF NOT EXISTS `session` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `session`;
 
@@ -33,6 +33,6 @@ CREATE TABLE IF NOT EXISTS `session` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `session` (`sessionID`, `starttime`, `endtime`, `ppCode`, `userID`, `notifAllowed`) 
-VALUES (NULL, '2024-03-15 07:02:37.000000', '2024-03-15 07:02:37.000000', '12', '2', '1');
+VALUES (NULL, '2024-03-15 07:02:37.000000', '2024-03-15 07:02:37.000000', '12', '6', '1');
 
 
