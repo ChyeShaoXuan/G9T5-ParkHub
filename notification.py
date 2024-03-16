@@ -6,8 +6,8 @@ import os
 from twilio.rest import Client
 
 #from os import environ
-os.environ['TWILIO_ACCOUNT_SID'] = 'AC5cae419481fe61101479ed4e9e528ee4'
-os.environ['TWILIO_AUTH_TOKEN'] = 'f42df443e2924a05c7ef7fa1aadb3472'
+os.environ['TWILIO_ACCOUNT_SID'] = 'AC3267325d042d08f2a0d81b95a077c0b2'
+os.environ['TWILIO_AUTH_TOKEN'] = '622b439044bd21fb2cafc8c33fa1dabd'
 
 account_sid = os.environ['TWILIO_ACCOUNT_SID']
 auth_token = os.environ['TWILIO_AUTH_TOKEN']
@@ -44,7 +44,7 @@ def processEndingSession(endingsession):
     phoneNo = '+65'+str(endingsession['phoneNo'])
     sessionID = endingsession['sessionID']
     message = client.messages.create(
-                                from_='+13219780566',
+                                from_='+16822008421',
                                 body="Dear user, your parking session will be ending soon on " + endtime +". To extend your session, please follow this link",
                                 to=phoneNo
                             )

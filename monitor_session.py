@@ -10,7 +10,25 @@ import pika
 import json
 import amqp_connection
 
+# APScheduler runs in background to trigger jobs at regular intervals to monitor sessions and send notifications
+from subprocess import call
+
+import time
+import os
+import pytz
+from apscheduler.schedulers.background import BackgroundScheduler
+
+scheduler = BackgroundScheduler()
+# scheduler.configure(timezone=pytz.timezone('Asia/Singapore'))
+scheduler.add_job(func='processMonitorSession',interval='target', seconds=300)
+scheduler.start()
+# print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
+
 app = Flask(__name__)
+
+import logging
+logging.getLogger('apscheduler').setLevel(logging.DEBUG)
+
 CORS(app)
 
 user_URL = "http://localhost:5000/user"
@@ -28,7 +46,6 @@ channel = connection.channel()
 if not amqp_connection.check_exchange(channel, exchangename, exchangetype):
     print("\nCreate the 'Exchange' before running this microservice. \nExiting the program.")
     sys.exit(0)  # Exit with a success status
-
 
 
 @app.route("/monitor_session")
@@ -54,8 +71,6 @@ def monitor_session():
 
     # if reached here, not a JSON request.
     
-
-
 def processMonitorSession():
     # 2. Send the order info {cart items}
     # Invoke the order microservice
@@ -67,10 +82,13 @@ def processMonitorSession():
     # record the activity log anyway
     print('\n\n-----Invoking session_record microservice-----')
     sessions_results = invoke_http(session_URL)
+    print("Sessions Results:", json.dumps(sessions_results, indent=4))  # This will print the structure of the sessions_results
+    logging.info("Checking for sessions that are about to end...")
     print("\nExpiring Sessions retrieved\n", sessions_results)
     list_of_ending_session = [endingsession for endingsession in sessions_results['data']]
 
     for info in list_of_ending_session:
+        print(info)
         userID = info['userID']
         sessionID = info['sessionID']
         endtime = info['endtime']
@@ -80,7 +98,7 @@ def processMonitorSession():
         # user_info = json.loads(user_info)
         print(user_info)
         phoneNo = user_info['data']['phoneNo']
-        print('\n\n-----Publishing the (order info) message with routing_key=notification.send-----')        
+        print('\n\n-----Publishing the session message with routing_key=notification.send-----')        
 
         message = {
             'sessionID':sessionID, 
@@ -88,72 +106,16 @@ def processMonitorSession():
             'endtime':endtime
             } # need sessionID, phoneNo, endtime
         messagejson = json.dumps(message)
-        # invoke_http(activity_log_URL, method="POST", json=order_result)            
         channel.basic_publish(exchange=exchangename, routing_key="notification.send", 
             body=messagejson, properties=pika.BasicProperties(delivery_mode = 2))
         
-
     
     # 4. Record new order
     # record the activity log anyway
     #print('\n\n-----Invoking activity_log microservice-----')
-        
     
     print("\nOrder published to RabbitMQ Exchange.\n")
-        
 
-
-    # - reply from the invocation is not used;
-    # continue even if this invocation fails
-
-    # Check the order result; if a failure, send it to the error microservice.
-    # code = user_result["code"]
-    # if code not in range(200, 300):
-
-    #     # Inform the error microservice
-    #     print('\n\n-----Invoking error microservice as order fails-----')
-    #     invoke_http(error_URL, method="POST", json=order_result)
-    #     # - reply from the invocation is not used; 
-    #     # continue even if this invocation fails
-    #     print("Order status ({:d}) sent to the error microservice:".format(
-    #         code), order_result)
-
-    #     # 7. Return error
-    #     return {
-    #         "code": 500,
-    #         "data": {"order_result": order_result},
-    #         "message": "Order creation failure sent for error handling."
-    #     }
-
-    # 5. Send new order to shipping
-    # Invoke the shipping record microservice
-    # print('\n\n-----Invoking shipping_record microservice-----')
-    # shipping_result = invoke_http(
-    #     shipping_record_URL, method="POST", json=order_result['data'])
-    # print("shipping_result:", shipping_result, '\n')
-
-    # # Check the shipping result; 
-    # # if a failure, send it to the error microservice.
-    # code = shipping_result["code"]
-    # if code not in range(200, 300):
-
-    #     # Inform the error microservice
-    #     print('\n\n-----Invoking error microservice as shipping fails-----')
-    #     invoke_http(error_URL, method="POST", json=shipping_result)
-    #     print("Shipping status ({:d}) sent to the error microservice:".format(
-    #         code), shipping_result)
-
-    #     # 7. Return error
-    #     return {
-    #         "code": 400,
-    #         "data": {
-    #             "order_result": order_result,
-    #             "shipping_result": shipping_result
-    #         },
-    #         "message": "Simulated shipping record error sent for error handling."
-    #     }
-
-    # 7. Return created order, shipping record
     return {
         "code": 201,
         "data": {
@@ -162,13 +124,25 @@ def processMonitorSession():
         }
     }
 
-
+@app.route('/scheduled-jobs')
+def scheduled_jobs():
+    jobs = scheduler.get_jobs()
+    jobs_info = [{"id": job.id, "next_run": job.next_run_time} for job in jobs]
+    return jsonify(jobs_info)
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
           " for placing an order...")
     app.run(host="0.0.0.0", port=5100, debug=True)
+
+    try:
+        # This is here to simulate application activity (which keeps the main thread alive).
+        while True:
+            time.sleep(5)
+    except (KeyboardInterrupt, SystemExit):
+        # Not strictly necessary if daemonic mode is enabled but should be done if possible
+        scheduler.shutdown()
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program,

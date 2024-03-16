@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    environ.get("dbURL") or "mysql+mysqlconnector://root:root@localhost:3306/session"
+    "mysql+mysqlconnector://root@localhost:3306/session"
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

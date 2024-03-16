@@ -5,7 +5,7 @@ from os import environ
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    environ.get("dbURL") or "mysql+mysqlconnector://root:root@localhost:3306/user"
+    "mysql+mysqlconnector://root@localhost:3306/user"
 )
 # mysql+mysqlconnector://is213@host.docker.internal:3306/user in compose.yaml
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

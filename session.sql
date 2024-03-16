@@ -11,7 +11,7 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `session`
---a
+
 CREATE DATABASE IF NOT EXISTS `session` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `session`;
 
