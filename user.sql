@@ -18,7 +18,7 @@ USE `user`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `user`
 --
 
 DROP TABLE IF EXISTS `user`;
@@ -28,20 +28,19 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(120) NOT NULL,
   `password` varchar(64) NOT NULL,
   `phoneNo` int(8) NOT NULL,
-  `notifAllowed` boolean NOT NULL,
   PRIMARY KEY (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `book`
+-- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`name`, `email`, `password`, `phoneNo`, `notifAllowed`) VALUES
-('Amy Chan', 'amychan@gmail.com', 'iloveamy1', '91237789', False),
-('Ben Lim', 'benlim@gmail.com', 'weatherhot8', '87734672', False),
-('Chan Jun Jie', 'chanjunjie@gmail.com', 'iamcjj00', '90013008', False),
-('Daphne Tan', 'daphnetan@gmail.com', 'nyc88brooklyn', '97653303', False),
-('Evan Teo', 'evanteo@gmail.com', 'evanoet90', '81919089', False);
+INSERT INTO `user` (`name`, `email`, `password`, `phoneNo`) VALUES
+('Amy Chan', 'amychan@gmail.com', 'iloveamy1', '91237789'),
+('Ben Lim', 'benlim@gmail.com', 'weatherhot8', '87734672'),
+('Chan Jun Jie', 'chanjunjie@gmail.com', 'iamcjj00', '90013008'),
+('Daphne Tan', 'daphnetan@gmail.com', 'nyc88brooklyn', '97653303'),
+('Evan Teo', 'evanteo@gmail.com', 'evanoet90', '81919089');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
