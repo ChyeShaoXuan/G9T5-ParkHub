@@ -1,13 +1,65 @@
 import requests
-import pymysql.cursors
 from datetime import datetime
-import re
+import os
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+app = Flask(__name__)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = (
+    os.environ.get("dbURL") or "mysql+mysqlconnector://root@localhost:3306/user"
+)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+class UraRates(db.Model):
+    __tablename__ = 'ura_rates'
+    id = db.Column(db.Integer, primary_key=True)
+    ppCode = db.Column(db.String(20))
+    ppName = db.Column(db.String(255))
+    weekdayMin = db.Column(db.String(20))
+    weekdayRate = db.Column(db.DECIMAL(10, 2))
+    satdayMin = db.Column(db.String(20))
+    satdayRate = db.Column(db.DECIMAL(10, 2))
+    sunPHMin = db.Column(db.String(20))
+    sunPHRate = db.Column(db.DECIMAL(10, 2))
+    startTime = db.Column(db.Time)
+    endTime = db.Column(db.Time)
+
+api_url = os.environ.get("API_URL")
+api_key = os.environ.get("API_KEY")
+token = os.environ.get("API_TOKEN")
+user_agent = os.environ.get("USER_AGENT")
+cookie = os.environ.get("COOKIE")
+
+@app.route('/ura_rates')
+def fetch_and_insert_data():
+    raw_data = fetch_data_from_api(api_url, api_key, token,user_agent, cookie)
+    
+    if raw_data and 'Result' in raw_data:
+        cleaned_data = [remove_geometries(carpark) for carpark in raw_data['Result']]
+        preprocessed_data = [preprocess_data(carpark) for carpark in cleaned_data]
+        
+        try:
+            for carpark in preprocessed_data:
+                if carpark['weekdayRate'] > 0 and carpark['satdayRate'] > 0 and carpark['sunPHRate'] > 0:
+                    new_rate = UraRates(**carpark)
+                    db.session.add(new_rate)
+                # else:
+                #     print("Skipped insertion due to a rate being 0:", carpark)
+            db.session.commit()
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            db.session.rollback()
+            
+        return 'Data fetched and inserted successfully!'
+    else:
+        return 'Failed to fetch data or no data available', 400
+
 
 # Function to fetch data from API
-    
-def fetch_data_from_api(api_url, access_key, token,user_agent, cookie):
+def fetch_data_from_api(api_url, api_key, token,user_agent, cookie):
     headers = {
-        'AccessKey': access_key,
+        'AccessKey': api_key,
         'Token': token,
         'User-Agent': user_agent,
         'Cookie': cookie,
@@ -43,65 +95,19 @@ def preprocess_data(carpark):
     preprocessed = {}
 
     preprocessed = {
-        'ppCode': carpark['ppCode'],
-        'ppName': carpark['ppName'],
-        'weekdayMin': parse_minutes(carpark['weekdayMin']) if 'weekdayMin' in carpark and carpark['weekdayMin'] is not None else 'Default_WeekdayMin',
-        'weekdayRate': parse_rate(carpark['weekdayRate']) if 'weekdayRate' in carpark and carpark['weekdayRate'] is not None else 0.0,
-        'satdayMin': parse_minutes(carpark['satdayMin']) if 'satdayMin' in carpark and carpark['satdayMin'] is not None else 'Default_SatdayMin',
-        'satdayRate': parse_rate(carpark['satdayRate']) if 'satdayRate' in carpark and carpark['satdayRate'] is not None else 0.0,
-        'sunPHMin': parse_minutes(carpark['sunPHMin']) if 'sunPHMin' in carpark and carpark['sunPHMin'] is not None else 'Default_SunPHMin',
-        'sunPHRate': parse_rate(carpark['sunPHRate']) if 'sunPHRate' in carpark and carpark['sunPHRate'] is not None else 0.0,
-        'startTime': convert_time(carpark['startTime']) if 'startTime' in carpark and carpark['startTime'] is not None else 'Default_StartTime',
-        'endTime': convert_time(carpark['endTime']) if 'endTime' in carpark and carpark['endTime'] is not None else 'Default_EndTime'
+        'ppCode': carpark.get('ppCode'),
+        'ppName': carpark.get('ppName'),
+        'weekdayMin': parse_minutes(carpark.get('weekdayMin', '0 mins')),
+        'weekdayRate': parse_rate(carpark.get('weekdayRate', '$0.00')),
+        'satdayMin': parse_minutes(carpark.get('satdayMin', '0 mins')),
+        'satdayRate': parse_rate(carpark.get('satdayRate', '$0.00')),
+        'sunPHMin': parse_minutes(carpark.get('sunPHMin', '0 mins')),
+        'sunPHRate': parse_rate(carpark.get('sunPHRate', '$0.00')),
+        'startTime': convert_time(carpark.get('startTime', '00:00 AM')),
+        'endTime': convert_time(carpark.get('endTime', '00:00 AM'))
     }
 
     return preprocessed
-
-
-# Function to insert data into MySQL
-def insert_data_to_mysql(data, db_config):
-    try:
-        connection = pymysql.connect(host=db_config['host'],
-                                     user=db_config['user'],
-                                     password=db_config['password'],
-                                     database=db_config['database'],
-                                     cursorclass=pymysql.cursors.DictCursor)
-        try:
-            with connection.cursor() as cursor:
-                sql = "INSERT INTO `ura_rates` (`ppCode`, `ppName`, `weekdayMin`, `weekdayRate`, `satdayMin`, `satdayRate`, `sunPHMin`, `sunPHRate`, `startTime`, `endTime`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                for carpark in data:
-                    cursor.execute(sql, (carpark['ppCode'], carpark['ppName'], carpark['weekdayMin'], carpark['weekdayRate'], carpark['satdayMin'], carpark['satdayRate'], carpark['sunPHMin'], carpark['sunPHRate'], carpark['startTime'], carpark['endTime']))
-            connection.commit()
-        finally:
-            connection.close()
-    except pymysql.MySQLError as e:
-        print(f"Database error: {e}")
-    except Exception as e:
-        print(f"Error: {e}")
-
-
-# API URL
-api_url = 'https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Details'
-access_key = '04560d6a-1e36-4e14-80bf-85616c85510f'
-token = '26au+nfJfdRV76Mc2w85Fd436PCerF181xd+pc6DrF8e+55u-pC4vbzvWfb@54MtBke0fbkCcPA8QRr04jzYfcK58UXF8JTerc4p'
-user_agent = 'PostmanRuntime/7.36.3'
-cookie = '__nxquid=HOIH8mjcscbjbYyu/M4fhlrXabqh+A==0014'
-
-# Database configuration
-db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',
-    'database': 'ura_rates'
-}
-
-# Main flow
-raw_data = fetch_data_from_api(api_url, access_key, token, user_agent, cookie)
-if raw_data and 'Result' in raw_data:
-    cleaned_data = [remove_geometries(carpark) for carpark in raw_data['Result']]
-    preprocessed_data = []
-    for carpark in cleaned_data:
-        processed = preprocess_data(carpark)
-        if processed:
-            preprocessed_data.append(processed)
-    insert_data_to_mysql(preprocessed_data, db_config)
+    
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000, debug=True)

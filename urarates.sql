@@ -2,6 +2,8 @@
 CREATE DATABASE IF NOT EXISTS ura_rates;
 USE ura_rates;
 
+DROP TABLE IF EXISTS ura_rates;
+
 CREATE TABLE IF NOT EXISTS ura_rates (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ppCode VARCHAR(20),
