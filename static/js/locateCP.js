@@ -55,7 +55,18 @@ async function getCoordsForAddress(address) {
         }
 
         const coordinates = data.results[0].geometry.location;
-
+        $.ajax({ 
+            url: 'http://localhost:5002/handle_coords', 
+            type: 'POST', 
+            contentType: 'application/json', 
+            data: JSON.stringify({ 'value': coordinates }), 
+            success: function(response) { 
+                console.log(response) 
+            }, 
+            error: function(error) { 
+                console.log(error); 
+            } 
+        });
         return coordinates;
     } 
     catch (error) {
@@ -64,14 +75,14 @@ async function getCoordsForAddress(address) {
     }
 }
 
-async function sendJsonToFlask(COORDINATES_JSON) {
-    try {
-        const response = await axios.post('/locate-CP', {
-            coordinates_json : COORDINATES_JSON
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error sending data to Flask route:', error.message);
-        throw error;
-    }
-}
+// async function sendJsonToFlask(COORDINATES_JSON) {
+//     try {
+//         const response = await axios.post('/locate-CP', {
+//             coordinates_json : COORDINATES_JSON
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error sending data to Flask route:', error.message);
+//         throw error;
+//     }
+// }
