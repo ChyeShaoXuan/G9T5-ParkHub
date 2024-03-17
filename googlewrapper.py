@@ -24,7 +24,19 @@ def make_post_request(url=google_URL):
 
 
 
+@app.route('/google_result', methods=['POST'])
+def retrievecoordinates():
+    try:
+        data = request.get_json()
+        print(data)
 
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred while creating the session. " + str(e)
+            }
+        ), 500
 
 
 
