@@ -11,20 +11,16 @@ import json
 import amqp_connection
 
 # APScheduler runs in background to trigger jobs at regular intervals to monitor sessions and send notifications
-from subprocess import call
+from flask_apscheduler import APScheduler
+import datetime
 
-import time
-import os
-import pytz
-from apscheduler.schedulers.background import BackgroundScheduler
-
-scheduler = BackgroundScheduler()
-# scheduler.configure(timezone=pytz.timezone('Asia/Singapore'))
-scheduler.add_job(func='processMonitorSession',interval='target', seconds=300)
-scheduler.start()
-# print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
+scheduler = APScheduler()
 
 app = Flask(__name__)
+
+scheduler.init_app(app)
+
+scheduler.start()
 
 import logging
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
@@ -124,25 +120,28 @@ def processMonitorSession():
         }
     }
 
-@app.route('/scheduled-jobs')
-def scheduled_jobs():
-    jobs = scheduler.get_jobs()
-    jobs_info = [{"id": job.id, "next_run": job.next_run_time} for job in jobs]
-    return jsonify(jobs_info)
+def schedule_monitor_session():
+    scheduler.add_job(id='monitor_session_job', func=monitor_session, trigger='interval', minutes=5)
+
+@app.route('/next_run_time')
+def next_run_time():
+    try:
+        job = scheduler.get_job('monitor_session_job')
+        if job:
+            return jsonify({
+                'next_run_time': job.next_run_time.strftime('%Y-%m-%d %H:%M:%S') if next_run_time else 'N/A'
+            })
+        else:
+            return jsonify({'error': 'Job not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Execute this program if it is run as a main script (not by 'import')
 if __name__ == "__main__":
     print("This is flask " + os.path.basename(__file__) +
           " for placing an order...")
+    schedule_monitor_session()
     app.run(host="0.0.0.0", port=5100, debug=True)
-
-    try:
-        # This is here to simulate application activity (which keeps the main thread alive).
-        while True:
-            time.sleep(5)
-    except (KeyboardInterrupt, SystemExit):
-        # Not strictly necessary if daemonic mode is enabled but should be done if possible
-        scheduler.shutdown()
     # Notes for the parameters:
     # - debug=True will reload the program automatically if a change is detected;
     #   -- it in fact starts two instances of the same flask program,
