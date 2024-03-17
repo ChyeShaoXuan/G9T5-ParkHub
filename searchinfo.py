@@ -28,6 +28,14 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     distance = earth_radius * c
 
     return distance
+
+@app.route('/handle_coords',methods=['POST'])
+def handle_data():
+   data=request.get_json()
+   print(data)
+
+   return data
+    
 @app.route('/search_results')
 def processreturntopcarparks():
     #invoke googlewrapper function and return results
