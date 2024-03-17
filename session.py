@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from sqlalchemy.sql import func
 from datetime import datetime, timedelta
+from sqlalchemy import desc
 
 app = Flask(__name__)
 
@@ -63,10 +64,10 @@ def get_all():
     ), 404
 
 # find specific session
-@app.route("/session/<string:sessionID>")
-def find_by_sessionID(sessionID):
+@app.route("/session/<string:userID>")
+def find_by_sessionID(userID):
     session = db.session.scalars(
-    	db.select(Session).filter_by(sessionID=sessionID).
+    	db.select(Session).filter_by(userID=userID).order_by(desc('sessionID')).
     	limit(1)
 ).first()
 
@@ -116,7 +117,7 @@ def find_by_current_datetime():
 def update_session(sessionID):
     try:
         session = db.session.scalars(
-        db.select(Session).filter_by(sessionID=sessionID).
+        db.select(Session).filter_by(sessionID=sessionID).order_by(desc('sessionID')).
         limit(1)).first()
         if not session:
             return jsonify(
