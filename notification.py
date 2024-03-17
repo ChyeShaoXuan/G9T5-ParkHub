@@ -5,10 +5,6 @@ import pika
 import os
 from twilio.rest import Client
 
-#from os import environ
-os.environ['TWILIO_ACCOUNT_SID'] = 'AC3267325d042d08f2a0d81b95a077c0b2'
-os.environ['TWILIO_AUTH_TOKEN'] = '622b439044bd21fb2cafc8c33fa1dabd'
-
 account_sid = os.environ['TWILIO_ACCOUNT_SID']
 auth_token = os.environ['TWILIO_AUTH_TOKEN']
 client = Client(account_sid, auth_token)
