@@ -2,9 +2,17 @@
  * Always set the map height explicitly to define the size of the div element
  * that contains the map. 
  */
- #map {
-    height: 50%;
-  }
+ /* #map {
+    height: 100%;
+    width: 600px;
+    border: 1px solid #333;
+    margin-top: 0.6em;
+    text-align: center;
+  } */
+
+#outerdiv {border: 1px solid blue; width: 99%; height: 99%; position:fixed; text-align:center}
+
+#map {border: 1px solid red; width: 100%; height: 100%; margin:0px auto; display:inline-block}
   
   /* 
    * Optional: Makes the sample page fill the window. 
