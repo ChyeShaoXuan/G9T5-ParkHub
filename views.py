@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 views = Blueprint(__name__, "views")
 
 name = "Chye Shao Xuan"
-location = "Sengkang"
+location = "Punggol"
 
 @views.route("/")
 def home():
@@ -18,6 +18,15 @@ def home():
 @views.route("/locate-CP")
 def locate_CP():
     return render_template("locateCP.html", username = name, location = location)
+
+@views.route("/locate-CP", methods=['POST'])
+def location_coordinates_JSON():
+    json_data = request.json
+    print("Received JSON data:", json_data)
+    # Process the JSON data as needed
+    return jsonify(
+        {"message": "JSON data received successfully"}
+    )
 
 @views.route("/map")
 def map():
