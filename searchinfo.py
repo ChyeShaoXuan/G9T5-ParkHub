@@ -33,7 +33,7 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 def handle_data():
    data=request.get_json()
    print(data)
-   invoke_http(googlewrapper_url,method='POST', json=data)
+   invoke_http('http://localhost:5000/results_coords',method='POST', json=data)
 
    return data
     
