@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 import requests
@@ -57,4 +57,4 @@ def make_google_request():
 
 
 if __name__=='__main__':
-    app.run(host='0.0.0.0', port=5000,debug=False)
+    app.run(host='0.0.0.0', port=5000,debug=True)
