@@ -5,16 +5,39 @@ import requests
 app = Flask(__name__)
 CORS(app)
 
-google_URL="https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=1.3068714444563487,103.9351283404665&radius=2000&types=parking&sensor=false&key=AIzaSyBNWtyHG53pXtomi6KJL9ZH4Erituy6FNE"
 
+@app.route('/results_coords', methods=['POST','GET'])
+def retrievecoordinates():
+    try:
+        
+        data = request.get_json()
+        print(data['value'])
+        global coords_object
+        coords_object=data['value']
+        return data['value']
 
+    except Exception as e:
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred while creating the session. " + str(e)
+            }
+        ), 500
 
 @app.route('/google_results')
-def make_post_request(url=google_URL):
+def make_google_request():
+    
+    
+    coords_lat=coords_object['lat']
+    
+    coords_lon=coords_object['lng']
+    coords_str=str(coords_lat)+","+str(coords_lon)
+    
     
     try:
+        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={}&radius=2000&types=parking&sensor=false&key=AIzaSyBNWtyHG53pXtomi6KJL9ZH4Erituy6FNE".format(coords_str)
         response = requests.get(url)
-        response.raise_for_status()  # Raise an exception for bad responses 
+        response.raise_for_status()
         response=response.json()
         print(response)
         return response

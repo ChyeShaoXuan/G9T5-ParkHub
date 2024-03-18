@@ -29,9 +29,6 @@ CORS(app)
 
 user_URL = "http://localhost:5000/user"
 session_URL = "http://localhost:5001/session/trigger"
-# shipping_record_URL = "http://localhost:5002/shipping_record"
-# activity_log_URL = "http://localhost:5003/activity_log"
-# error_URL = "http://localhost:5004/error"
 
 exchangename = "notification_topic" # exchange name
 exchangetype="topic"
@@ -49,7 +46,7 @@ def monitor_session():
     # Simple check of input format and data of the request are JSON
     try:
             # do the actual work
-            # 1. Send order info {cart items}
+            # get ending sessions
         result = processMonitorSession()
         return jsonify(result), result["code"]
 
@@ -68,54 +65,41 @@ def monitor_session():
     # if reached here, not a JSON request.
     
 def processMonitorSession():
-    # 2. Send the order info {cart items}
-    # Invoke the order microservice
-    # print('\n-----Invoking user microservice-----')
-    # user_result = invoke_http(user_URL, method='GET')
-    # print('user_result:', user_result)
-
-    # 4. Record new order
-    # record the activity log anyway
-    print('\n\n-----Invoking session_record microservice-----')
+    # Invoke the session microservice
+    print('\n\n-----Invoking session microservice-----')
     sessions_results = invoke_http(session_URL)
     print("Sessions Results:", json.dumps(sessions_results, indent=4))  # This will print the structure of the sessions_results
     logging.info("Checking for sessions that are about to end...")
     print("\nExpiring Sessions retrieved\n", sessions_results)
-    list_of_ending_session = [endingsession for endingsession in sessions_results['data']]
+    if sessions_results['code'] == 200:
 
-    for info in list_of_ending_session:
-        print(info)
-        userID = info['userID']
-        sessionID = info['sessionID']
-        endtime = info['endtime']
-        print("hiiiiiiii")
-        user_info = invoke_http(user_URL+'/'+str(userID))
-        print(type(user_info))
-        # user_info = json.loads(user_info)
-        print(user_info)
-        phoneNo = user_info['data']['phoneNo']
-        print('\n\n-----Publishing the session message with routing_key=notification.send-----')        
+        list_of_ending_session = [endingsession for endingsession in sessions_results['data']]
 
-        message = {
-            'sessionID':sessionID, 
-            'phoneNo':phoneNo, 
-            'endtime':endtime
-            } # need sessionID, phoneNo, endtime
-        messagejson = json.dumps(message)
-        channel.basic_publish(exchange=exchangename, routing_key="notification.send", 
-            body=messagejson, properties=pika.BasicProperties(delivery_mode = 2))
-        
-    
-    # 4. Record new order
-    # record the activity log anyway
-    #print('\n\n-----Invoking activity_log microservice-----')
-    
-    print("\nOrder published to RabbitMQ Exchange.\n")
+        for info in list_of_ending_session:
+            notifAllowed = info['notifAllowed']
+            if notifAllowed == 1:
+                userID = info['userID']
+                sessionID = info['sessionID']
+                endtime = info['endtime']
+                user_info = invoke_http(user_URL+'/'+str(userID))
+                phoneNo = user_info['data']['phoneNo']
+                print('\n\n-----Publishing the (notification info) message with routing_key=notification.send-----')        
+
+                message = {
+                    'sessionID':sessionID, 
+                    'phoneNo':phoneNo, 
+                    'endtime':endtime
+                    } # need sessionID, phoneNo, endtime
+                messagejson = json.dumps(message) # convert message to json format
+       
+                channel.basic_publish(exchange=exchangename, routing_key="notification.send", 
+                    body=messagejson, properties=pika.BasicProperties(delivery_mode = 2))
+
+                print("\nOrder published to RabbitMQ Exchange.\n")
 
     return {
         "code": 201,
         "data": {
-            # "user_result": user_result,
             "sessions_results": sessions_results
         }
     }
