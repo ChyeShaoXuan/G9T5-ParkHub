@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 
 from flask_cors import CORS
 from math import radians, sin, cos, sqrt, atan2
@@ -42,6 +42,9 @@ def processreturntopcarparks():
     #invoke googlewrapper function and return results
     google_response=invoke_http(googlewrapper_url,method='GET')
     google_result=google_response['results']
+    print(222222)
+    print()
+    # print(google_result[0])
     #invoke ltawrapperlots and return results
     lta_response=invoke_http(ltawrapper_url,method='GET')
     lta_carparks=lta_response['value']
@@ -56,7 +59,7 @@ def processreturntopcarparks():
         google_lat=google_car_park['geometry']['location']['lat']
         google_lon=google_car_park['geometry']['location']['lng'] 
         carpark_name=google_car_park['name']
-        # print(google_lat,google_lon)
+        print(google_lat,google_lon, carpark_name)
         for lta_carpark in lta_carparks:    
         
           lta_coordinates=lta_carpark['Location']
@@ -67,14 +70,17 @@ def processreturntopcarparks():
              lta_lat=float(split_str[0])
              lta_lon=float(split_str[1])
           
+            #something wrong with the condition
              if(haversine_distance(google_lat,google_lon,lta_lat,lta_lon)<20) and lta_carpark['CarParkID'] not in results_list:
-       
+                print(3333333)
                 results_list.append({'google_lat':google_lat,'carparkid':lta_carpark['CarParkID'],'google_lon':google_lon,'carpark_name':carpark_name,'lotsavailable':lta_carpark['AvailableLots']})
 
+    print(results_list)
     for result in results_list:
        ura_response=invoke_http(urawrapper_url+result['carparkid'],method='GET')
        result['rates']=ura_response
-    return results list
+    print(results_list)
+    return results_list
 
 
 
@@ -82,7 +88,5 @@ def processreturntopcarparks():
 
 
 
-
-
 if __name__=='__main__':
-    app.run(host='0.0.0.0', port=5002,debug=False)
+    app.run(host='0.0.0.0', port=5002,debug=True)

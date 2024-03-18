@@ -31,8 +31,8 @@ document.getElementById('searchButton').addEventListener('click', async function
         console.log(COORDINATES_JSON)
 
         // Send the JSON data to the Flask microservice
-        const response = await sendJsonToFlask(COORDINATES_JSON);
-        console.log('Response from Flask route:', response);
+        // const response = await sendJsonToFlask(COORDINATES_JSON);
+        // console.log('Response from Flask route:', response);
         
     } 
     catch (error) {
@@ -56,31 +56,35 @@ async function getCoordsForAddress(address) {
 
         const coordinates = data.results[0].geometry.location;
         $.ajax({ 
-            url: 'http://localhost:5002/handle_coords', 
+            url: 'http://localhost:5002/handle_coords', //  searchInfo/handle_coords
             type: 'POST', 
             contentType: 'application/json', 
             data: JSON.stringify({ 'value': coordinates }), 
             success: function(response) { 
-                axios.get('http://localhost:5002/search_results')
+                axios.get('http://localhost:5002/search_results') //if successful response from the server, will call search_results from searchinfo/search_results
                 .then(response => { 
-                    console.log(response.data);
+                    console.log(response);
                     new_html=''
                     
                     for(carpark of response.data){
-                       new_html+=`<div class="max-w-sm rounded overflow-hidden shadow-lg">
-                       
-                       <div class="px-6 py-4">
-                         <div class="font-bold text-xl mb-2">${carpark['carpark_name']}</div>
-                         
-                       </div>
-                       <div class="px-6 pt-4 pb-2">
-                         <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">lots available:${carpark['lotsavailable']}</span>
-                         <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekday rate:${carpark['rates']['weekdayrate']}</span>
-                         <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekend rate:${carpark['rates']['weekendrate']}</span>
-                       </div>
-                     </div>`
+                       new_html+=`
+                        <div class="max-w-sm rounded overflow-hidden shadow-lg">
+                            <div class="px-6 py-4">
+                                Carpark Name:<div class=" text-xl mb-2"> ${carpark['carpark_name']}</div>
+                            </div>
+                            <div class="px-6 pt-4 pb-2">
+                                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">lots available:${carpark['lotsavailable']}</span>
+                                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekday rate:${carpark['rates']['weekdayrate']}</span>
+                                <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekend rate:${carpark['rates']['weekendrate']}</span>
+                            </div>
+                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-5 border border-2 rounded-full">
+                                Select Carpark
+                            </button>
+
+                        </div>`
                     // new_html+=`${carpark['carpark_name']}`;
                     }
+                    console.log(new_html)
                     document.getElementById('carparktopresults').innerHTML=new_html
                   
                   
