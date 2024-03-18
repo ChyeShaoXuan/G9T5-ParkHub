@@ -54,7 +54,8 @@ def processreturntopcarparks():
     results_list=[]
     for google_car_park in google_result:
         google_lat=google_car_park['geometry']['location']['lat']
-        google_lon=google_car_park['geometry']['location']['lng']   # not sure why the google_result only returns the 1st 2 sets of lat long
+        google_lon=google_car_park['geometry']['location']['lng'] 
+        carpark_name=google_car_park['name']
         # print(google_lat,google_lon)
         for lta_carpark in lta_carparks:    
         
@@ -68,13 +69,13 @@ def processreturntopcarparks():
           
              if(haversine_distance(google_lat,google_lon,lta_lat,lta_lon)<20) and lta_carpark['CarParkID'] not in results_list:
        
-                results_list.append({'carparkid':lta_carpark['CarParkID'],'lotsavailable':lta_carpark['AvailableLots']})
+                results_list.append({'google_lat':google_lat,'carparkid':lta_carpark['CarParkID'],'google_lon':google_lon,'carpark_name':carpark_name,'lotsavailable':lta_carpark['AvailableLots']})
 
     for result in results_list:
        ura_response=invoke_http(urawrapper_url+result['carparkid'],method='GET')
        result['rates']=ura_response
-    print(results_list)
-processreturntopcarparks()
+    return results list
+
 
 
     
