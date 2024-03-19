@@ -48,8 +48,8 @@ document.getElementById('infoform').addEventListener('submit', async function(ev
     // Get form data
     try{
     const location = document.getElementById('autocompleteInput').value;
-    const startTime = document.getElementById('starttime').value;
-    const endTime = document.getElementById('endtime').value;
+    const starttime = document.getElementById('starttime').value;
+    const endtime = document.getElementById('endtime').value;
 
     console.log(location)
     // Send data to microservice
@@ -58,7 +58,7 @@ document.getElementById('infoform').addEventListener('submit', async function(ev
 
     const COORDINATES_JSON = JSON.stringify(coordinates);
     console.log(COORDINATES_JSON)
-
+    
     } 
     catch (error) {
         console.error('Error:', error.message);
@@ -131,7 +131,7 @@ async function getCoordsForAddress(address) {
                                 <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekday rate:${carpark['rates']['weekdayrate']}</span>
                                 <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekend rate:${carpark['rates']['weekendrate']}</span>
                             </div>
-                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-5 border border-2 rounded-full">
+                            <button onclick="confirmSelection('${carpark['carpark_name']}', '${coordinates.lat}', '${coordinates.lng}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-5 border border-2 rounded-full">
                                 Select Carpark
                             </button>
 
@@ -140,7 +140,7 @@ async function getCoordsForAddress(address) {
                     }
                     console.log(new_html)
                     document.getElementById('carparktopresults').innerHTML=new_html
-              
+                    
                   })
                   .catch(error => {
               
@@ -160,6 +160,59 @@ async function getCoordsForAddress(address) {
         throw error;
     }
 }
+
+function confirmSelection(carparkName, lat, lng) {
+    var isConfirmed = confirm("Confirm selection of " + carparkName + "?");
+    // console.log(carparkName)
+    // console.log(lat);
+    // console.log(lng);
+    if (isConfirmed) {
+        sendSelectedCP(lat,lng);
+    }
+}
+
+async function sendSelectedCP(lat,lng) {
+    const data = {
+        starttime: document.getElementById('starttime').value,
+        endtime: document.getElementById('endtime').value,
+        userID: '007',  
+        latitude: lat,
+        longitude: lng
+    };
+    console.log(data);
+
+    // try {
+    //     const response = await axios.post('http://localhost:5002/store_selection', data);
+    //     if (response.data.status === 'success') {
+    //         alert('Selection successful!');
+    //     } else {
+    //         alert('Failed to store selection.');
+    //     }
+    // } catch (error) {
+    //     console.error('Error sending selection to backend:', error);
+    // }
+    $.ajax({ 
+        url: 'http://localhost:5002/store_selection',
+        type: 'POST', 
+        contentType: 'application/json', 
+        data: JSON.stringify(data), 
+        success: function(e) { 
+            console.log(e)
+            // axios.get('http://localhost:5002/search_results') //if successful response from the server, will call search_results from searchinfo/search_results
+            // .then(response => { 
+                
+            //   })
+            //   .catch(error => {
+            //     console.log(error.message)
+            //   })
+        }, 
+        error: function(error) { 
+            console.log(error); 
+        } 
+    });
+
+}
+
 
 // async function sendJsonToFlask(COORDINATES_JSON) {
 //     try {

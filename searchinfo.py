@@ -1,4 +1,5 @@
-from flask import Flask, request
+# 5002 is the port of searchinfo.py complex microservice
+from flask import Flask, request,jsonify
 
 from flask_cors import CORS
 from math import radians, sin, cos, sqrt, atan2
@@ -82,11 +83,25 @@ def processreturntopcarparks():
     print(results_list)
     return results_list
 
-
-
-    
-
-
+@app.route('/store_selection', methods=['GET','POST'])
+def store_selection():
+    if request.method == 'POST':
+        data = request.get_json()
+        print(data)
+    # carparkId = data['carparkId']
+    # starttime = data['starttime']
+    # endtime = data['endtime']
+    # userID = data['userID']
+    # latitude = data['latitude']
+    # longitude = data['longitude']
+    # notifAllowed=True
+    session_service_url = 'http://localhost:5006/session'
+    try:
+        # Forward the session data to the session service
+        result = invoke_http(session_service_url, method='POST', json=data)
+        return jsonify(result), result.get('code', 200)
+    except Exception as e:
+        return jsonify({'status': 'failure', 'message': str(e)}), 500
 
 if __name__=='__main__':
     app.run(host='0.0.0.0', port=5002,debug=True)

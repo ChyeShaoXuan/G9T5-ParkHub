@@ -28,7 +28,9 @@ CREATE TABLE IF NOT EXISTS `session` (
   `endtime` datetime NOT NULL,
   `ppCode` varchar(5) NOT NULL,
   `userID` int NOT NULL,
-  `notifAllowed` boolean NOT NULL,
+  -- `notifAllowed` boolean NOT NULL,
+  'latitude' FLOAT,
+  'longitude' FLOAT,
   PRIMARY KEY (`sessionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

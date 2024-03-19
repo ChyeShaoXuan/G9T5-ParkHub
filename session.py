@@ -23,23 +23,27 @@ class Session(db.Model):
     starttime = db.Column(db.DateTime, nullable=False)
     endtime = db.Column(db.DateTime, nullable=False)
     ppCode = db.Column(db.String(5))
+    lat = db.Column(db.Float, nullable=False)
+    lng = db.Column(db.Float, nullable=False)
     # foreign key to carpark locator?
     notifAllowed = db.Column(db.Boolean, nullable=False)
     userID = db.Column(db.Integer, nullable=False)
     
     
 
-    def __init__(self, starttime, endtime, ppCode, userID, notifAllowed):
+    def __init__(self, starttime, endtime, ppCode, userID, notifAllowed, lat, lng):
         # self.sessionID = sessionID
         self.starttime = starttime
         self.endtime = endtime
         self.ppCode = ppCode
+        self.lat = lat
+        self.lng = lng
         self.userID = userID
         self.notifAllowed = notifAllowed
 
 
     def json(self):
-        return {"sessionID": self.sessionID, "starttime": self.starttime, "endtime": self.endtime, "ppCode": self.ppCode, "userID": self.userID, "notifAllowed": self.notifAllowed}
+        return {"sessionID": self.sessionID, "starttime": self.starttime, "endtime": self.endtime, "lat": self.lat, "lng": self.lng,"ppCode": self.ppCode, "userID": self.userID, "notifAllowed": self.notifAllowed}
 
 # get all
 @app.route("/session")
@@ -164,7 +168,7 @@ def create_session():
     
 
         if data:
-            session = Session(userID=data['userID'],starttime=data['starttime'],endtime=data['endtime'],ppCode=data['ppCode'],notifAllowed=data['notifAllowed'])
+            session = Session(userID=data['userID'],starttime=data['starttime'],endtime=data['endtime'],latitude=data['latitude'],longitude=data['longitude'],ppCode=data.get['ppCode'],notifAllowed=data['notifAllowed'])
  
         db.session.add(session)
         db.session.commit()
