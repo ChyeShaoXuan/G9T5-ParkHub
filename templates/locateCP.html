@@ -15,8 +15,8 @@
     <div class="mt-0">
         <div class="items-center">
             <div class="text-center mt-10 px-20 sm:px-20 sm:pt-20">
-                <p  id="header" class="mb-5">Navigate. Park. Explore.</p>
-                <p class="mb-10 text-slate-500 text-xs"> 
+                <p  id="header" class="mb-5 text-xl">Navigate. Park. Explore.</p>
+                <p class="mb-10 text-slate-500 text-sm"> 
                     <!--INFLUENCE TEXT-->
                     Join the ParkHub community and embark on a journey of hassle-free parking adventures.
                     <br>
@@ -25,7 +25,7 @@
                     
                 <!--SEARCHBAR-->
                 <div class="px-1 lg:px-24 flex justify-center">
-                    <form class="w-3/4 mr-11"> <!-- Set the width to half of the parent container -->
+                    <form class="w-3/4 mr-11" id="infoform"> <!-- Set the width to half of the parent container -->
                         <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
                         <div class="relative flex"> <!-- Make the container a flex container -->
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -33,20 +33,29 @@
                             </div>
                             
                             <!--input field-->
-                            <input type="search" id="autocompleteInput" class="block w-full p-4 pl-10 text-xs sm:text-sm text-gray-900 border-2 border-slate-700 rounded-full bg-gray-100 focus:ring-blue-500 focus:border-blue-500" placeholder="Locate or input carpark...">
-                            
-                            <!--Use your location button-->
-
-                            <!--Search Button-->
-                            <button id="searchButton" class="sm:visible text-white absolute right-2.5 bottom-2.5 bg-gray-300 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm px-4 py-2">Search</button>
+                            <input type="search" id="autocompleteInput" required class="block w-full p-4 pl-10 text-xs sm:text-sm text-gray-900 border-2 border-slate-700 rounded-full bg-gray-100 focus:ring-blue-500 focus:border-blue-500" placeholder="Locate or input carpark...">  
+                        </div>
+                        <div>
+                            <br><p>Please enter your predicted start time and end time of your parking session</p>
+                                <div>
+                                    <br><span>Start time:</span>
+                                    <input type="datetime-local" id="starttime" placeholder="starttime" required>
+                                </div>
+                                <div>
+                                    <br><span>End time:</span>
+                                    <input type="datetime-local" id="endtime" placeholder="endtime" required>
+                                </div>
+                                <div>
+                                    <!--Search Button-->
+                                    <br><button type="submit" id="searchButton" class="sm:visible text-white bg-gray-300 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-md px-20 py-2">Search</button>
+                                </div>
                         </div>
                     </form>
                 </div>
-
                 <div id="carparktopresults" class="flex justify-center flex-col items-center">
 
                 </div>
-
+            </form>
                 <div class="h-50"></div>
             </div>
         </div>
