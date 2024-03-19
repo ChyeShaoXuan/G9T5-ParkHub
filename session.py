@@ -5,7 +5,9 @@ from sqlalchemy.sql import func
 from datetime import datetime, timedelta
 from sqlalchemy import desc
 
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     "mysql+mysqlconnector://root@localhost:3306/session"
@@ -23,27 +25,27 @@ class Session(db.Model):
     starttime = db.Column(db.DateTime, nullable=False)
     endtime = db.Column(db.DateTime, nullable=False)
     ppCode = db.Column(db.String(5))
-    lat = db.Column(db.Float, nullable=False)
-    lng = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
     # foreign key to carpark locator?
     notifAllowed = db.Column(db.Boolean, nullable=False)
     userID = db.Column(db.Integer, nullable=False)
     
     
 
-    def __init__(self, starttime, endtime, ppCode, userID, notifAllowed, lat, lng):
+    def __init__(self, starttime, endtime, ppCode, userID, notifAllowed, latitude, longitude):
         # self.sessionID = sessionID
         self.starttime = starttime
         self.endtime = endtime
         self.ppCode = ppCode
-        self.lat = lat
-        self.lng = lng
+        self.latitude = latitude
+        self.longitude = longitude
         self.userID = userID
         self.notifAllowed = notifAllowed
 
 
     def json(self):
-        return {"sessionID": self.sessionID, "starttime": self.starttime, "endtime": self.endtime, "lat": self.lat, "lng": self.lng,"ppCode": self.ppCode, "userID": self.userID, "notifAllowed": self.notifAllowed}
+        return {"sessionID": self.sessionID, "starttime": self.starttime, "endtime": self.endtime, "latitude": self.latitude, "longitude": self.longitude,"ppCode": self.ppCode, "userID": self.userID, "notifAllowed": self.notifAllowed}
 
 # get all
 @app.route("/session")
@@ -165,11 +167,11 @@ def create_session():
 
     try:
         data = request.get_json()
-    
+        print(data)
 
         if data:
-            session = Session(userID=data['userID'],starttime=data['starttime'],endtime=data['endtime'],latitude=data['latitude'],longitude=data['longitude'],ppCode=data.get['ppCode'],notifAllowed=data['notifAllowed'])
- 
+            notifAllowed_bool = True if data['notifAllowed'].lower() == 'yes' else False
+            session = Session(userID=data['userID'], starttime=data['starttime'], endtime=data['endtime'], latitude=data['latitude'], longitude=data['longitude'], ppCode=data.get('ppCode'), notifAllowed=notifAllowed_bool)
         db.session.add(session)
         db.session.commit()
 
@@ -203,4 +205,4 @@ def create_session():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5006, debug=True)

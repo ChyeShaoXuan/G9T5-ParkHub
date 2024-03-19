@@ -177,7 +177,9 @@ async function sendSelectedCP(lat,lng) {
         endtime: document.getElementById('endtime').value,
         userID: '007',  
         latitude: lat,
-        longitude: lng
+        longitude: lng,
+        notifAllowed: 'Yes',
+        ppCode: 'A004'
     };
     console.log(data);
 
@@ -191,25 +193,25 @@ async function sendSelectedCP(lat,lng) {
     // } catch (error) {
     //     console.error('Error sending selection to backend:', error);
     // }
-    $.ajax({ 
-        url: 'http://localhost:5002/store_selection',
-        type: 'POST', 
-        contentType: 'application/json', 
-        data: JSON.stringify(data), 
-        success: function(e) { 
-            console.log(e)
-            // axios.get('http://localhost:5002/search_results') //if successful response from the server, will call search_results from searchinfo/search_results
-            // .then(response => { 
-                
-            //   })
-            //   .catch(error => {
-            //     console.log(error.message)
-            //   })
-        }, 
-        error: function(error) { 
-            console.log(error); 
-        } 
-    });
+        $.ajax({ 
+            url: 'http://localhost:5006/session',
+            type: 'POST', 
+            contentType: 'application/json', 
+            data: JSON.stringify(data), 
+            success: function(e) { 
+                console.log(e)
+                // axios.get('http://localhost:5002/search_results') //if successful response from the server, will call search_results from searchinfo/search_results
+                // .then(response => { 
+                    
+                //   })
+                //   .catch(error => {
+                //     console.log(error.message)
+                //   })
+            }, 
+            error: function(xhr, status, error) { 
+                console.log("Error: " + xhr.responseText);
+            }
+        });
 
 }
 

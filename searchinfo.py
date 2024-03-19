@@ -83,11 +83,20 @@ def processreturntopcarparks():
     print(results_list)
     return results_list
 
-@app.route('/store_selection', methods=['GET','POST'])
-def store_selection():
-    if request.method == 'POST':
-        data = request.get_json()
-        print(data)
+# @app.route('/store_selection', methods=['POST'])
+# def store_selection():
+#     try:
+#         data = request.get_json(force=True)  # Use force=True to ensure JSON parsing
+#         print(data)
+#         if not data:
+#             raise ValueError("No data provided")   
+#         session_service_url = 'http://localhost:5006/session'
+#         # Forward the session data to the session service
+#         result = invoke_http(session_service_url, method='POST', json=data) 
+#         print(result)   
+#         return jsonify({"status": "success"}), 200
+#     except Exception as e:
+#         return jsonify({'status': 'failure', 'message': str(e)}), 400
     # carparkId = data['carparkId']
     # starttime = data['starttime']
     # endtime = data['endtime']
@@ -95,13 +104,7 @@ def store_selection():
     # latitude = data['latitude']
     # longitude = data['longitude']
     # notifAllowed=True
-    session_service_url = 'http://localhost:5006/session'
-    try:
-        # Forward the session data to the session service
-        result = invoke_http(session_service_url, method='POST', json=data)
-        return jsonify(result), result.get('code', 200)
-    except Exception as e:
-        return jsonify({'status': 'failure', 'message': str(e)}), 500
+
 
 if __name__=='__main__':
     app.run(host='0.0.0.0', port=5002,debug=True)
