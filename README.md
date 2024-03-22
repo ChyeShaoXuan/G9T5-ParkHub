@@ -20,3 +20,18 @@ cookie = '__nxquid=HOIH8mjcscbjbYyu/M4fhlrXabqh+A==0014'
 6. Run ltawrapperlots.py
 7. Run urawrapper_rates.py
 8. Run searchinfo.py
+
+# Scenario 3
+1. Import user.sql into phpmyadmin
+2. Import session.sql into phpmyadmin
+3. Run docker run -d --hostname esd-rabbit --name rabbitmq-mgmt -p 5672:5672 -p 15672:15672 rabbitmq:3-management in terminal
+4. Update authentication key in notification.py (changes daily)
+5. Run views.py
+6. Run amqp_setup.py
+7. Run amqp_connection.py
+8. Run user.py
+9. Run session.py
+10. Run notification.py
+11. Run monitor_session.py
+12. Create new user with the registered Twilio phone number to receive SMS
+13. With that account, create a new session with endtime within the next 15 minutes and notification turned on to test the SMS system
