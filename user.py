@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "mysql+mysqlconnector://root@localhost:3306/user"
+    "mysql+mysqlconnector://root:root@localhost:3306/user"
 )
 # mysql+mysqlconnector://is213@host.docker.internal:3306/user in compose.yaml
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -86,13 +88,16 @@ def find_by_userID(userID):
 def create_user():
 
     data = request.get_json()
+    print(data)
 
     # Check if email already exists
     if db.session.query(User).filter_by(email=data.get('email')).first():
         return jsonify({"code": 400, "message": "User with this email already exists."}), 400
 
     # Create user object
-    user = User(**data)
+    if data:
+            user = User(email=data['email'],phoneNo=data['phoneNo'],password=data['password'],name=data['name'])
+ 
 
     try:
         db.session.add(user)
@@ -145,6 +150,30 @@ def update_user(user_id):
             "data": user.json()
         }
     ), 201
+
+# check user info on login
+@app.route('/checkuser', methods=['POST'])
+def check_user():
+    print(request.json)
+    data = request.json  # Assuming you're sending JSON
+    email = data['email']
+    password = data['password']
+    user = db.session.scalars(
+    	db.select(User).filter_by(email=email).
+    	limit(1)
+        ).first()
+    print(user.password)
+    if user:
+        if password == user.password:
+            return jsonify({
+            "code": 201,
+            "data": user.json()
+        }), 200
+
+    return jsonify({"message": "Details are incorrect"}), 401
+    # Perform your check or operation here
+    
+
 
 
 if __name__ == '__main__':
