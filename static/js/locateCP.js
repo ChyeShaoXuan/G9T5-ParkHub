@@ -131,7 +131,7 @@ async function getCoordsForAddress(address) {
                                 <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekday rate:${carpark['rates']['weekdayrate']}</span>
                                 <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekend rate:${carpark['rates']['weekendrate']}</span>
                             </div>
-                            <button onclick="confirmSelection('${carpark['carpark_name']}', '${coordinates.lat}', '${coordinates.lng}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-5 border border-2 rounded-full">
+                            <button onclick="confirmSelection('${carpark['carpark_name']}', '${coordinates.lat}', '${coordinates.lng}', '${carpark['carparkid']}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-5 border border-2 rounded-full">
                                 Select Carpark
                             </button>
 
@@ -161,38 +161,40 @@ async function getCoordsForAddress(address) {
     }
 }
 
-function confirmSelection(carparkName, lat, lng) {
+function askForNotificationPreference(lat, lng, carparkID) {
+    var isConfirmed = confirm("Do you want to receive notifications about your parking session?");
+    if (isConfirmed) {
+        // User wants to receive notifications
+        sendSelectedCP(lat, lng, true, carparkID); 
+    } else {
+        // User does not want to receive notifications
+        sendSelectedCP(lat, lng, false, carparkID); 
+    }
+}
+
+function confirmSelection(carparkName, lat, lng, carparkID) {
     var isConfirmed = confirm("Confirm selection of " + carparkName + "?");
     // console.log(carparkName)
     // console.log(lat);
     // console.log(lng);
     if (isConfirmed) {
-        sendSelectedCP(lat,lng);
+        askForNotificationPreference(lat, lng, carparkID);
     }
 }
 
-async function sendSelectedCP(lat,lng) {
+// This sends details of the carpark and parking session to session database
+async function sendSelectedCP(lat,lng, notifAllowed, carparkID) {
     const data = {
         starttime: document.getElementById('starttime').value,
         endtime: document.getElementById('endtime').value,
         userID: '007',  
         latitude: lat,
         longitude: lng,
-        notifAllowed: 'Yes',
-        ppCode: 'A004'
+        notifAllowed: notifAllowed,
+        ppCode: carparkID
     };
     console.log(data);
 
-    // try {
-    //     const response = await axios.post('http://localhost:5002/store_selection', data);
-    //     if (response.data.status === 'success') {
-    //         alert('Selection successful!');
-    //     } else {
-    //         alert('Failed to store selection.');
-    //     }
-    // } catch (error) {
-    //     console.error('Error sending selection to backend:', error);
-    // }
         $.ajax({ 
             url: 'http://localhost:5006/session',
             type: 'POST', 
@@ -200,13 +202,7 @@ async function sendSelectedCP(lat,lng) {
             data: JSON.stringify(data), 
             success: function(e) { 
                 console.log(e)
-                // axios.get('http://localhost:5002/search_results') //if successful response from the server, will call search_results from searchinfo/search_results
-                // .then(response => { 
-                    
-                //   })
-                //   .catch(error => {
-                //     console.log(error.message)
-                //   })
+                alert('Selection successful!');
             }, 
             error: function(xhr, status, error) { 
                 console.log("Error: " + xhr.responseText);

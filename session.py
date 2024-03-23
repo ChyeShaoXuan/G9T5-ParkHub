@@ -170,8 +170,8 @@ def create_session():
         print(data)
 
         if data:
-            notifAllowed_bool = True if data['notifAllowed'].lower() == 'yes' else False
-            session = Session(userID=data['userID'], starttime=data['starttime'], endtime=data['endtime'], latitude=data['latitude'], longitude=data['longitude'], ppCode=data.get('ppCode'), notifAllowed=notifAllowed_bool)
+            # notifAllowed_bool = True if data['notifAllowed'].lower() == 'yes' else False
+            session = Session(userID=data['userID'], starttime=data['starttime'], endtime=data['endtime'], latitude=data['latitude'], longitude=data['longitude'], ppCode=data.get('ppCode',None), notifAllowed=data['notifAllowed'])
         db.session.add(session)
         db.session.commit()
 
