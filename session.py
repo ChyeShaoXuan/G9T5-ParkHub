@@ -86,6 +86,21 @@ def find_by_sessionID(userID):
         }
     ), 404
 
+@app.route("/session/location/<string:userID>") #scenario 2: input userid, return location
+def return_carpark_location(userID):
+    session = db.session.scalars(
+        db.select(Session).filter_by(userID=userID).order_by(desc('sessionID')).limit(1)
+    ).first()
+
+    if session:
+        location = {"cp_lat": session.cp_lat, "cp_lng": session.cp_lng}
+        return jsonify({"code": 200, "data": location})
+    else:
+        return jsonify({"code": 404, "message": "Session record not found."}), 404
+
+
+    
+
 @app.route("/session/trigger")
 def find_by_current_datetime():
     now = datetime.now()  # Use datetime.now() if your application uses local time instead of UTC
