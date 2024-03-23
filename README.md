@@ -15,11 +15,12 @@ token = ******your token here
 user_agent = 'PostmanRuntime/7.36.3'
 cookie = '__nxquid=HOIH8mjcscbjbYyu/M4fhlrXabqh+A==0014'
 
-4. Run views.py
+4. Run app.py and add the /views route to the URL link
 5. Run googlewrapper.py
 6. Run ltawrapperlots.py
 7. Run urawrapper_rates.py
 8. Run searchinfo.py
+9. Run session.py
 
 # Scenario 3
 1. Import user.sql into phpmyadmin
