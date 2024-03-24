@@ -1,0 +1,68 @@
+version: "3.8"
+
+
+services:
+
+
+  #################################
+  # Googlewrapper microservice
+  #################################
+  googlewrapper:
+    build:
+      context: ./
+      dockerfile: google.Dockerfile
+    image: chyeshaoxuan/googlewrapper:1.0
+    restart: always
+    
+    ports:
+     - "5000:5000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  
+    # environment:
+        
+      
+
+
+  ###############################################
+  # ltawrapperlots
+  ###############################################
+  ltawrapper:
+    build:
+      context: ./
+      dockerfile: lta.Dockerfile
+    image: chyeshaoxuan/ltawrapper:1.0
+    restart: always
+    # environment:
+    ports:
+     - "5001:5001"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
+  urawrapper:
+    build:
+      context: ./
+      dockerfile: ura.Dockerfile
+    image: chyeshaoxuan/urawrapper:1.0
+    restart: always
+    
+    ports:
+     - "5003:5003"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  searchinfo:
+    build:
+      context: ./
+      dockerfile: searchinfo.Dockerfile
+    image: chyeshaoxuan/searchinfo:1.0
+    restart: always
+    depends_on:
+      - urawrapper
+      - ltawrapper
+      - googlewrapper
+    ports:
+     - "5002:5002"
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
