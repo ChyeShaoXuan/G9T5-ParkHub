@@ -5,9 +5,8 @@ from sqlalchemy.sql import func
 from datetime import datetime, timedelta
 from sqlalchemy import desc
 
-from flask_cors import CORS
+
 app = Flask(__name__)
-CORS(app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     "mysql+mysqlconnector://root@localhost:3306/session"
@@ -25,11 +24,12 @@ class Session(db.Model):
     starttime = db.Column(db.DateTime, nullable=False)
     endtime = db.Column(db.DateTime, nullable=False)
     ppCode = db.Column(db.String(5))
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
     # foreign key to carpark locator?
     notifAllowed = db.Column(db.Boolean, nullable=False)
     userID = db.Column(db.Integer, nullable=False)
+
+    latitude = db.Column(db.Float, nullable=True)  # Add latitude column
+    longitude = db.Column(db.Float, nullable=True)  # Add longitude column
     
     
 
@@ -38,14 +38,23 @@ class Session(db.Model):
         self.starttime = starttime
         self.endtime = endtime
         self.ppCode = ppCode
-        self.latitude = latitude
-        self.longitude = longitude
         self.userID = userID
         self.notifAllowed = notifAllowed
+        self.latitude = latitude
+        self.longitude = longitude
 
 
     def json(self):
-        return {"sessionID": self.sessionID, "starttime": self.starttime, "endtime": self.endtime, "latitude": self.latitude, "longitude": self.longitude,"ppCode": self.ppCode, "userID": self.userID, "notifAllowed": self.notifAllowed}
+        return {
+            "sessionID": self.sessionID, 
+            "starttime": self.starttime, 
+            "endtime": self.endtime, 
+            "ppCode": self.ppCode, 
+            "userID": self.userID, 
+            "notifAllowed": self.notifAllowed, 
+            "latitude": self.latitude, 
+            "longitude": self.longitude
+            }
 
 # get all
 @app.route("/session")
@@ -99,8 +108,12 @@ def return_carpark_location(userID):
     ).first()
 
     if session:
-        location = {"cp_lat": session.cp_lat, "cp_lng": session.cp_lng}
-        return jsonify({"code": 200, "data": location})
+        data = {
+            "userID": session.userID,
+            "latitude": session.latitude,
+            "longitude": session.longitude
+        }
+        return jsonify({"code": 200, "data": data})
     else:
         return jsonify({"code": 404, "message": "Session record not found."}), 404
 
@@ -182,11 +195,11 @@ def create_session():
 
     try:
         data = request.get_json()
-        print(data)
+    
 
         if data:
-            # notifAllowed_bool = True if data['notifAllowed'].lower() == 'yes' else False
-            session = Session(userID=data['userID'], starttime=data['starttime'], endtime=data['endtime'], latitude=data['latitude'], longitude=data['longitude'], ppCode=data.get('ppCode',None), notifAllowed=data['notifAllowed'])
+            session = Session(userID=data['userID'],starttime=data['starttime'],endtime=data['endtime'],ppCode=data['ppCode'],notifAllowed=data['notifAllowed'])
+ 
         db.session.add(session)
         db.session.commit()
 
@@ -220,4 +233,4 @@ def create_session():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5006, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
