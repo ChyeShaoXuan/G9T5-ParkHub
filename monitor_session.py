@@ -10,7 +10,7 @@ import pika
 import json
 import amqp_connection
 
-# APScheduler runs in background to trigger jobs at regular intervals to monitor sessions and send notifications
+# APScheduler runs in background to trigger jobs at regular 5-min intervals to monitor_session
 from flask_apscheduler import APScheduler
 import datetime
 
@@ -107,6 +107,7 @@ def processMonitorSession():
 def schedule_monitor_session():
     scheduler.add_job(id='monitor_session_job', func=monitor_session, trigger='interval', minutes=5)
 
+# This checks the next run time of the scheduler, which should run every 5 min
 @app.route('/next_run_time')
 def next_run_time():
     try:
