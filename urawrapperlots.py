@@ -9,11 +9,11 @@ CORS(app)
 ura_URL="https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Details"
 custom_headers = {
     "AccessKey": "e61ff773-ba6b-4e89-aeda-759e0bc55604",  # Example custom header
+    # token needs to be changed every day.
     "Token": "h@Va9r4Zb6-6RC3W96aP4b8V-SDw4jFYs-97QQWS51qyewgZ8b8wBemNnDfceux3Pf75@mk6Gmh5DgHqzfVYky7Gbdee74-2Q7wC",
     'User-Agent': 'PostmanRuntime/7.28.4',
     'Cookie': 'BIGipServerIAPP-HTTPS_A83-WWW.URA.GOV.SG_V4.app~IAPP-HTTPS_A83-WWW.URA.GOV.SG_V4_pool=!z0XVV5FkuQdCmN1CNQC8y2lWE3egLN/KKai61thY7Ni7WgSTHDm7rFYdZdydhkW3TPT1pit5ATmlEMU=; TS019d87de=01c9d36efc676e7a8a518d67985c9a128171baa74a24b4b25dee67ed071f25d6751f393ca9327f547898e23ec6d7702e73738d0b42'  # Example authorization header
 }
-# token needs to be changed every day.
 # call postman via the url https://www.ura.gov.sg/uraDataService/insertNewToken.action with GET request, 
 # enter header which is the accesskey. The response will give the token to be used for the day.
 def haversine_distance(lat1, lon1, lat2, lon2):

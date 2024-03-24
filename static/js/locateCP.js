@@ -48,8 +48,8 @@ document.getElementById('infoform').addEventListener('submit', async function(ev
     // Get form data
     try{
     const location = document.getElementById('autocompleteInput').value;
-    const startTime = document.getElementById('starttime').value;
-    const endTime = document.getElementById('endtime').value;
+    const starttime = document.getElementById('starttime').value;
+    const endtime = document.getElementById('endtime').value;
 
     console.log(location)
     // Send data to microservice
@@ -58,7 +58,7 @@ document.getElementById('infoform').addEventListener('submit', async function(ev
 
     const COORDINATES_JSON = JSON.stringify(coordinates);
     console.log(COORDINATES_JSON)
-
+    
     } 
     catch (error) {
         console.error('Error:', error.message);
@@ -164,6 +164,56 @@ async function getCoordsForAddress(address) {
         console.error('Error:', error.message);
         throw error;
     }
+}
+
+function askForNotificationPreference(lat, lng, carparkID) {
+    var isConfirmed = confirm("Do you want to receive notifications about your parking session?");
+    if (isConfirmed) {
+        // User wants to receive notifications
+        sendSelectedCP(lat, lng, true, carparkID); 
+    } else {
+        // User does not want to receive notifications
+        sendSelectedCP(lat, lng, false, carparkID); 
+    }
+}
+
+function confirmSelection(carparkName, lat, lng, carparkID) {
+    var isConfirmed = confirm("Confirm selection of " + carparkName + "?");
+    // console.log(carparkName)
+    // console.log(lat);
+    // console.log(lng);
+    if (isConfirmed) {
+        askForNotificationPreference(lat, lng, carparkID);
+    }
+}
+
+// This sends details of the carpark and parking session to session database
+async function sendSelectedCP(lat,lng, notifAllowed, carparkID) {
+    const data = {
+        starttime: document.getElementById('starttime').value,
+        endtime: document.getElementById('endtime').value,
+        userID: '007',  
+        latitude: lat,
+        longitude: lng,
+        notifAllowed: notifAllowed,
+        ppCode: carparkID
+    };
+    console.log(data);
+
+        $.ajax({ 
+            url: 'http://localhost:5006/session',
+            type: 'POST', 
+            contentType: 'application/json', 
+            data: JSON.stringify(data), 
+            success: function(e) { 
+                console.log(e)
+                alert('Selection successful!');
+            }, 
+            error: function(xhr, status, error) { 
+                console.log("Error: " + xhr.responseText);
+            }
+        });
+
 }
 
 

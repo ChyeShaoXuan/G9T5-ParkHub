@@ -1,4 +1,5 @@
-from flask import Flask, request
+# 5002 is the port of searchinfo.py complex microservice
+from flask import Flask, request,jsonify
 
 from flask_cors import CORS
 from math import radians, sin, cos, sqrt, atan2
@@ -81,12 +82,6 @@ def processreturntopcarparks():
        result['rates']=ura_response
     print(results_list)
     return results_list
-
-
-
-    
-
-
 
 if __name__=='__main__':
     app.run(host='0.0.0.0', port=5002,debug=True)
