@@ -6,9 +6,10 @@ from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
+CORS(app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "mysql+mysqlconnector://root@localhost:3306/user"
+    "mysql+mysqlconnector://root:root@localhost:3306/user"
 )
 # mysql+mysqlconnector://is213@host.docker.internal:3306/user in compose.yaml
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -94,6 +95,7 @@ def find_by_userID(userID):
 def create_user():
 
     data = request.get_json()
+    print(data)
 
     # Check if email already exists
     if db.session.query(User).filter_by(email=data.get('email')).first():
@@ -101,7 +103,6 @@ def create_user():
 
     # Create user object
     if data:
-            # hashed_password = generate_password_hash(data['password'])
             user = User(email=data['email'],phoneNo=data['phoneNo'],password=data['password'],name=data['name'])
  
 
@@ -168,12 +169,9 @@ def check_user():
     	db.select(User).filter_by(email=email).
     	limit(1)
         ).first()
+    print(user.password)
     if user:
         if password == user.password:
-            # user = User.query.filter_by(email=email).first()
-            print(user.userID)
-            # session["userID"] = user.userID 
-            # session["authenticated"] = True
             return jsonify({
             "code": 201,
             "data": user.json()

@@ -5,17 +5,19 @@ from flask_session import Session
 
 views = Blueprint(__name__, "views")
 
-name = "Chye Shao Xuan"
+name = 0
 location = "Punggol"
+
 
 @views.route("/")
 def home():
+    name = request.args.get('username')
     return render_template("homepage.html", username = name, location = location)
 
 @views.route("/login")
 def login():
-        return render_template("login.html")
-    
+    return render_template("login.html")
+
 @views.route("/register")
 def register():
     return render_template("register.html")

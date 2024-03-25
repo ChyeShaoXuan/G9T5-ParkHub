@@ -32,8 +32,17 @@
 
             <!-- Setup and start animation! -->
             <script>
-              var concatenatedString = "Welcome, <span id='username'>{{ username }}</span> <br> to <br> <span style='color: green;'>ParkHub!!</span>";
+              let params = new URLSearchParams(window.location.search);
 
+              let username = params.get('username')
+              if (username !== null){
+                var concatenatedString = "Welcome, <span id='username'>{{ username }}</span> <br> to <br> <span style='color: green;'>ParkHub!!</span>";
+              }
+              else{
+                var concatenatedString = "Welcome to <span style='color: green;'>ParkHub!!</span>";
+
+              }
+              
                 var typed = new Typed('.autotype', {
                     strings: [concatenatedString],
                     typeSpeed: 50,

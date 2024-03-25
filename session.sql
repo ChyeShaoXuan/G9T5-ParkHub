@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS `session` (
   PRIMARY KEY (`sessionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `session` (`sessionID`, `starttime`, `endtime`, `ppCode`, `userID`, `notifAllowed`) 
-VALUES (NULL, '2024-03-15 07:02:37.000000', '2024-03-15 07:02:37.000000', '12', '6', '1');
+INSERT INTO `session` (`sessionID`, `starttime`, `endtime`, `ppCode`, `userID`, `notifAllowed`, `latitude`, `longitude`) 
+VALUES (NULL, '2024-03-15 07:02:37.000000', '2024-03-15 07:02:37.000000', '12', '6', '1', 1.3005709, 103.874394);
 
-
+INSERT INTO `session` (`sessionID`, `starttime`, `endtime`, `ppCode`, `userID`, `notifAllowed`, `latitude`, `longitude`) 
+VALUES (NULL, '2024-03-16 08:30:00', '2024-03-16 10:45:00', '23', '8', '0', 1.2998, 103.8771);
