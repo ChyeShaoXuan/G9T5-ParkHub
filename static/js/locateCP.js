@@ -188,6 +188,7 @@ async function sendSelectedCP(lat,lng, notifAllowed, carparkID) {
         starttime: document.getElementById('starttime').value,
         endtime: document.getElementById('endtime').value,
         userID: '007',  
+        //userID: session["userID"]
         latitude: lat,
         longitude: lng,
         notifAllowed: notifAllowed,

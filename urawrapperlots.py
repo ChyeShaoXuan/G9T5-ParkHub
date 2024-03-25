@@ -60,7 +60,8 @@ url = "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2"
 custom_headers = {
     'AccountKey': 'kkFPEYubRJqbnVDK5CmanA==',
     'User-Agent': 'PostmanRuntime/7.28.4',
-    'accept':'application/json'
+    'accept':'application/json',
+    
     }
 
 response = make_get_request(url, headers=custom_headers)

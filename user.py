@@ -1,6 +1,9 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
+from flask_cors import CORS, cross_origin
+from flask_session import Session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
@@ -13,6 +16,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+# @cross_origin(supports_credentials=True)
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -20,10 +24,10 @@ class User(db.Model):
 
     userID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(64), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
-    password = db.Column(db.String(64), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     phoneNo = db.Column(db.Integer, nullable=False)
-
+    # password_hash = db.Column(db.String(128))
 
     def __init__(self, name, email, password, phoneNo):
         self.name = name
@@ -31,10 +35,14 @@ class User(db.Model):
         self.password = password
         self.phoneNo = phoneNo
 
+    def set_password(self, secret):
+        self.password = generate_password_hash(secret)
+
+    def check_password(self, secret):
+        return check_password_hash(self.password, secret)
 
     def json(self):
         return {"userID": self.userID, "name": self.name, "email": self.email, "password": self.password, "phoneNo": self.phoneNo}
-
 
 
 @app.route("/user")
@@ -92,7 +100,10 @@ def create_user():
         return jsonify({"code": 400, "message": "User with this email already exists."}), 400
 
     # Create user object
-    user = User(**data)
+    if data:
+            # hashed_password = generate_password_hash(data['password'])
+            user = User(email=data['email'],phoneNo=data['phoneNo'],password=data['password'],name=data['name'])
+ 
 
     try:
         db.session.add(user)
@@ -146,6 +157,53 @@ def update_user(user_id):
         }
     ), 201
 
+# check user info on login
+@app.route('/checkuser', methods=['POST'])
+def check_user():
+    print(request.json)
+    data = request.json  # Assuming you're sending JSON
+    email = data['email']
+    password = data['password']
+    user = db.session.scalars(
+    	db.select(User).filter_by(email=email).
+    	limit(1)
+        ).first()
+    if user:
+        if password == user.password:
+            # user = User.query.filter_by(email=email).first()
+            print(user.userID)
+            # session["userID"] = user.userID 
+            # session["authenticated"] = True
+            return jsonify({
+            "code": 201,
+            "data": user.json()
+        }), 200
+
+    return jsonify({"message": "Invalid credentials"}), 401
+    # Perform your check or operation here
+
+@app.route("/check", methods=["POST"])
+def authenticate_user():
+        data = request.json
+        email = data['email']
+        password = data['password']
+        print(email)
+        print(password)
+        # Query the database for the user
+        user = User.query.filter_by(email=data['email']).first()
+        print(user)
+        # Check if user exists and the password is correct
+        # print(user.check_password(password))
+        if user:
+            session["userID"] = user.userID 
+            session["authenticated"] = True
+            flash("You have successfully logged in.", "success")
+            return jsonify({'status': 'success', 'message': 'Login successful'}), 200
+        else:
+            flash("Invalid username or password.", "danger")
+            return jsonify({'status': 'failure', 'message': 'Invalid email or password'}), 401
+
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5010, debug=True)
