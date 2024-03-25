@@ -48,8 +48,8 @@ document.getElementById('infoform').addEventListener('submit', async function(ev
     // Get form data
     try{
     const location = document.getElementById('autocompleteInput').value;
-    const starttime = document.getElementById('starttime').value;
-    const endtime = document.getElementById('endtime').value;
+    // const starttime = document.getElementById('starttime').value;
+    // const endtime = document.getElementById('endtime').value;
 
     console.log(location)
     // Send data to microservice
