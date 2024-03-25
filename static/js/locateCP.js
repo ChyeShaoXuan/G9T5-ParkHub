@@ -110,7 +110,7 @@ async function getCoordsForAddress(address) {
 
         const coordinates = data.results[0].geometry.location;
         $.ajax({ 
-            url: 'http://localhost:5002/handle_coords', //  searchInfo/handle_coords
+            url: 'http://localhost:5000/google_results', //  sent straight to googlewrapper instead of having to go through search info 
             type: 'POST', 
             contentType: 'application/json', 
             data: JSON.stringify({ 'value': coordinates }), 
