@@ -68,14 +68,14 @@ def invoke_http(url, method='GET', json=None, **kwargs):
         result = {"code": code, "message": "Invalid JSON output from service: " + url + ". " + str(e)}
 
     return result
-#deleted function
-# @app.route('/handle_coords',methods=['GET','POST'])
-# def handle_data():
-#    results=request.get_json()
-#    print(results)
-#    invoke_http('http://localhost:5000/results_coords',method='POST',json=results)
+deleted function
+@app.route('/handle_coords',methods=['GET','POST'])
+def handle_data():
+   results=request.get_json()
+   print(results)
+   invoke_http('http://googlewrapper:5000/google_results',method='POST',json=results)
 
-#    return results
+   return results
 
 
 
