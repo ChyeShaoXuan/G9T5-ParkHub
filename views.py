@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for  
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, session, flash
 #request (for query parameters)
+# Run pip install Flask-Session first
+from flask_session import Session
 
 views = Blueprint(__name__, "views")
 
@@ -47,6 +49,11 @@ def map():
 def get_location():
     api_key = 'AIzaSyDuWCAvENcOz861ihyW1EOF8WTJAzKfHfY'
     return render_template("getlocation.html", gm_api_key = api_key)
+
+@views.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("views.login"))
 
 
 #------------------------------------------------------------------------------------------

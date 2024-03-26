@@ -35,7 +35,9 @@
             </div>
             <div class="p-0">
                 <!-- Login Button -->
-                <button type="button" onclick="checkUser()" id="loginButton" class="sm:visible text-white bg-gray-300 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-md px-20 py-2">Login</button>
+                <button type="submit" id="loginButton" class="sm:visible text-white bg-gray-300 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-md px-20 py-2">Login</button>
+              </div>
+                <!-- <button type="button" onclick="checkUser()" id="loginButton" class="sm:visible text-white bg-gray-300 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-md px-20 py-2">Login</button> -->
             </div>
         </form>
     </div>
@@ -54,37 +56,37 @@
                     showCursor: false // Optional: Hide the cursor
                 });
 
-                function checkUser() {
-                    const email = document.getElementById('emaillogin').value;
-                    console.log(email);
-                    const password = document.getElementById('passwordlogin').value;
-                    const messageElement = document.getElementById('message');
-                    // console.log(hi);
+                // function checkUser() {
+                //     const email = document.getElementById('emaillogin').value;
+                //     console.log(email);
+                //     const password = document.getElementById('passwordlogin').value;
+                //     const messageElement = document.getElementById('message');
+                //     // console.log(hi);
 
-                    fetch('http://localhost:5000/checkuser', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ email: email, password: password }),
-                    })
-                    .then(response => {
-                        console.log(response)
-                        if (response.ok) {
-                            username = 'jerms' // hardcoded
-                            window.location.href = `/views/?username=${encodeURIComponent(username)}`
-                            } else {
-                                messageElement.textContent = 'Details are incorrect.';
-                            }
-                        })
-                    .catch(error => console.error('Error:', error));
-                }
+                //     fetch('http://localhost:5000/checkuser', {
+                //         method: 'POST',
+                //         headers: {
+                //             'Content-Type': 'application/json',
+                //         },
+                //         body: JSON.stringify({ email: email, password: password }),
+                //     })
+                //     .then(response => {
+                //         console.log(response)
+                //         if (response.ok) {
+                //             username = 'jerms' // hardcoded
+                //             window.location.href = `/views/?username=${encodeURIComponent(username)}`
+                //             } else {
+                //                 messageElement.textContent = 'Details are incorrect.';
+                //             }
+                //         })
+                //     .catch(error => console.error('Error:', error));
+                // }
             </script>
         </div>
 
-        <!-- <div class="w-auto">
+        <div class="w-auto">
           <img id="boys" src=" {{ url_for('static', filename='images/carpark.jpg') }}" class="mb-50 relative hidden md:block w-2/4 mx-auto"/>
-        </div> -->
+        </div>
         
     </div>
   </section>
@@ -92,6 +94,11 @@
 {% endblock %}
 
 {% block js_reference %}
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
   <script 
     type="text/javascript" 
     src="{{ url_for('static', filename='js/login.js') }}">
