@@ -4,12 +4,19 @@ from os import environ
 from flask_cors import CORS, cross_origin
 from flask_session import Session
 from werkzeug.security import generate_password_hash, check_password_hash
+import secrets
+from datetime import timedelta
 
 app = Flask(__name__)
 CORS(app)
 
+# Secret key is necessary for session management
+app.secret_key = secrets.token_hex(16)
+
+app.permanent_session_lifetime = timedelta(days=30)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "mysql+mysqlconnector://root:root@localhost:3306/user"
+    "mysql+mysqlconnector://root@localhost:3306/user"
 )
 # mysql+mysqlconnector://is213@host.docker.internal:3306/user in compose.yaml
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -172,6 +179,9 @@ def check_user():
     print(user.password)
     if user:
         if password == user.password:
+            print(user.userID)
+            # session["userID"] = user.userID 
+            # session["authenticated"] = True
             return jsonify({
             "code": 201,
             "data": user.json()
@@ -193,15 +203,11 @@ def authenticate_user():
         # Check if user exists and the password is correct
         # print(user.check_password(password))
         if user:
-            session["userID"] = user.userID 
-            session["authenticated"] = True
             flash("You have successfully logged in.", "success")
             return jsonify({'status': 'success', 'message': 'Login successful'}), 200
         else:
             flash("Invalid username or password.", "danger")
             return jsonify({'status': 'failure', 'message': 'Invalid email or password'}), 401
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5010, debug=True)

@@ -34,12 +34,23 @@ async function sendSession(email,password) {
             // xhrFields: {
             //     withCredentials: true
             // },
-            success: function(e) { 
-                console.log(e)
-                alert('Login successful!');
-            }, 
-            error: function(xhr, status, error) { 
+            success: function(response) {
+                if (response.code === 201 && response.data) {
+                    // Assuming response.data contains the user object, including userID
+                    // Store user data in session storage
+                    sessionStorage.setItem('userID', response.data.userID);
+    
+                    // Optionally, redirect the user to another page or update the UI to reflect successful login
+                    console.log('Login successful! User ID:', response.data.userID);
+                    alert('Login successful!');
+                } else {
+                    // Handle login failure
+                    alert('Login failed. Please check your credentials.');
+                }
+            },
+            error: function(xhr, status, error) {
                 console.log("Error: " + xhr.responseText);
+                alert("Login error: " + xhr.responseText);
             }
         });
 

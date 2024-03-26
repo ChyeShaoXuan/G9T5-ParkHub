@@ -44,7 +44,7 @@ autocompleteInputFunction()
 // When form is submitted
 document.getElementById('infoform').addEventListener('submit', async function(event) {
     event.preventDefault(); // Prevent default form submission
-
+    console.log(sessionStorage.getItem('userID'))
     // Get form data
     try{
     const location = document.getElementById('autocompleteInput').value;
@@ -139,7 +139,7 @@ async function getCoordsForAddress(address) {
                                             <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekday rate: ${carpark['rates']['weekdayrate']}</span>
                                             <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekend rate: ${carpark['rates']['weekendrate']}</span>
                                         </div>
-                                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-5 border border-2 rounded-full">
+                                        <button onclick='confirmSelection(${carpark['carpark_name']}, ${carpark['google_lat']}, ${carpark['google_lon']}, ${carpark['carparkid']})' class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-5 border border-2 rounded-full">
                                             Select Carpark
                                         </button>
                                     </div>
@@ -192,8 +192,8 @@ async function sendSelectedCP(lat,lng, notifAllowed, carparkID) {
     const data = {
         starttime: document.getElementById('starttime').value,
         endtime: document.getElementById('endtime').value,
-        userID: '007',  
-        //userID: session["userID"]
+        // userID: '007',  
+        userID: sessionStorage.getItem('userID'),
         latitude: lat,
         longitude: lng,
         notifAllowed: notifAllowed,
