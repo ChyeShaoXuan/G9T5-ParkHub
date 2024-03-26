@@ -4,9 +4,10 @@ from os import environ
 from sqlalchemy.sql import func
 from datetime import datetime, timedelta
 from sqlalchemy import desc
-
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     "mysql+mysqlconnector://root@localhost:3306/session"
@@ -27,9 +28,8 @@ class Session(db.Model):
     # foreign key to carpark locator?
     notifAllowed = db.Column(db.Boolean, nullable=False)
     userID = db.Column(db.Integer, nullable=False)
-
-    latitude = db.Column(db.Float, nullable=True)  # Add latitude column
-    longitude = db.Column(db.Float, nullable=True)  # Add longitude column
+    latitude = db.Column(db.Float, nullable=True)  
+    longitude = db.Column(db.Float, nullable=True) 
     
     
 
@@ -198,7 +198,7 @@ def create_session():
     
 
         if data:
-            session = Session(userID=data['userID'],starttime=data['starttime'],endtime=data['endtime'],ppCode=data['ppCode'],notifAllowed=data['notifAllowed'])
+            session = Session(userID=data['userID'],starttime=data['starttime'],endtime=data['endtime'],ppCode=data['ppCode'],notifAllowed=data['notifAllowed'], latitude=data['latitude'], longitude=data['longitude'])
  
         db.session.add(session)
         db.session.commit()

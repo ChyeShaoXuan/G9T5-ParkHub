@@ -177,9 +177,6 @@ function askForNotificationPreference(lat, lng, carparkID) {
 }
 
 function confirmSelection(carparkName, lat, lng, carparkID) {
-    console.log(carparkName)
-    console.log(lat);
-    console.log(lng);
     var isConfirmed = confirm("Confirm selection of " + carparkName + "?");
     if (isConfirmed) {
         askForNotificationPreference(lat, lng, carparkID);
