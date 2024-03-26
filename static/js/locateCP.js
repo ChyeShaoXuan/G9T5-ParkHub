@@ -48,8 +48,8 @@ document.getElementById('infoform').addEventListener('submit', async function(ev
     // Get form data
     try{
     const location = document.getElementById('autocompleteInput').value;
-    const starttime = document.getElementById('starttime').value;
-    const endtime = document.getElementById('endtime').value;
+    // const starttime = document.getElementById('starttime').value;
+    // const endtime = document.getElementById('endtime').value;
 
     console.log(location)
     // Send data to microservice
@@ -110,7 +110,7 @@ async function getCoordsForAddress(address) {
 
         const coordinates = data.results[0].geometry.location;
         $.ajax({ 
-            url: 'http://localhost:5002/handle_coords', //  searchInfo/handle_coords
+            url: 'http://localhost:5000/google_results', //  sent straight to googlewrapper instead of having to go through search info 
             type: 'POST', 
             contentType: 'application/json', 
             data: JSON.stringify({ 'value': coordinates }), 

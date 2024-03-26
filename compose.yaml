@@ -1,6 +1,6 @@
 version: "3.8"
 
-
+#building all services here
 services:
 
 
@@ -16,6 +16,8 @@ services:
     
     ports:
      - "5000:5000"
+    networks:
+      - mynetwork
     extra_hosts:
       - "host.docker.internal:host-gateway"  
     # environment:
@@ -35,22 +37,29 @@ services:
     # environment:
     ports:
      - "5001:5001"
+    networks:
+      - mynetwork
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-
+#ura wrapper service
   urawrapper:
     build:
       context: ./
       dockerfile: ura.Dockerfile
     image: chyeshaoxuan/urawrapper:1.0
     restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/ura_rates
+    
     
     ports:
      - "5003:5003"
+    networks:
+      - mynetwork
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
+#search info complex microservice
   searchinfo:
     build:
       context: ./
@@ -63,6 +72,13 @@ services:
       - googlewrapper
     ports:
      - "5002:5002"
+    networks:
+      - mynetwork
 
     extra_hosts:
       - "host.docker.internal:host-gateway"
+#docker networks
+
+networks:
+  mynetwork:
+    driver: bridge
