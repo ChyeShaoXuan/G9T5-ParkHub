@@ -77,6 +77,40 @@ services:
 
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+#session microservice
+  session:
+    build:
+      context: ./
+      dockerfile: session.Dockerfile
+    image: chyeshaoxuan/session:1.0
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/session
+    ports:
+     - "5006:5006"
+    networks:
+      - mynetwork
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+#user microservice
+  user:
+    build:
+      context: ./
+      dockerfile: user.Dockerfile
+    image: chyeshaoxuan/user:1.0
+    restart: always
+    environment:
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/user
+    ports:
+     - "5010:5010"
+    networks:
+      - mynetwork
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 #docker networks
 
 networks:
