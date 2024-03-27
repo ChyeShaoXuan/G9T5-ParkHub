@@ -22,33 +22,13 @@ def login():
 def register():
     return render_template("register.html")
 
-# #access parameters in url
-# @views.route("/profile/<username>")
-# def profile(username):
-#     return render_template("homepage.html", name=username)
-
 @views.route("/locate-CP")
 def locate_CP():
     return render_template("locateCP.html", username = name, location = location)
 
-@views.route("/locate-CP", methods=['POST'])
-def location_coordinates_JSON():
-    json_data = request.json
-    print("Received JSON data:", json_data)
-    # Process the JSON data as needed
-    return jsonify(
-        {"message": "JSON data received successfully"}
-    )
-
-@views.route("/map")
-def map():
-    api_key = 'AIzaSyDuWCAvENcOz861ihyW1EOF8WTJAzKfHfY'
-    return render_template("map.html", gm_api_key = api_key)
-
-@views.route("/get-location")
-def get_location():
-    api_key = 'AIzaSyDuWCAvENcOz861ihyW1EOF8WTJAzKfHfY'
-    return render_template("getlocation.html", gm_api_key = api_key)
+@views.route("/nearbyAmenities")
+def nearby_Amenities():
+    return render_template("nearbyAmenities.html")
 
 @views.route("/logout")
 def logout():
@@ -57,6 +37,20 @@ def logout():
 
 
 #------------------------------------------------------------------------------------------
+# #access parameters in url
+# @views.route("/profile/<username>")
+# def profile(username):
+#     return render_template("homepage.html", name=username)
+
+# @views.route("/map")
+# def map():
+#     api_key = 'AIzaSyDuWCAvENcOz861ihyW1EOF8WTJAzKfHfY'
+#     return render_template("map.html", gm_api_key = api_key)
+
+# @views.route("/get-location")
+# def get_location():
+#     api_key = 'AIzaSyDuWCAvENcOz861ihyW1EOF8WTJAzKfHfY'
+#     return render_template("getlocation.html", gm_api_key = api_key)
 
 #query parameters (profile?name=bill)
 @views.route("/profile")
