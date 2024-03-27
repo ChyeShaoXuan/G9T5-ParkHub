@@ -18,7 +18,7 @@ app.secret_key = secrets.token_hex(16)
 app.permanent_session_lifetime = timedelta(days=30)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8001)
+    app.run(debug=True, port=8000)
 
 
 

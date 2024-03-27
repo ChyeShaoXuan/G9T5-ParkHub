@@ -1,12 +1,3 @@
-from flask import Flask, request, jsonify, render_template
-import mysql.connector
-from flask_cors import CORS
-app = Flask(__name__)
-import json
-CORS(app)
-#runs on port 5003
-
-
 
 from flask import Flask,jsonify
 from os import environ

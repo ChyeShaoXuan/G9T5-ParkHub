@@ -22,6 +22,13 @@ cookie = '__nxquid=HOIH8mjcscbjbYyu/M4fhlrXabqh+A==0014'
 8. Run searchinfo.py
 9. Run session.py
 
+# Scenario 2
+1. Run session.py
+2. Run nearby_amenities_wrapper.py
+3. Run searchAmenities.py
+4. Go to http://localhost:8000/views/nearbyAmenities
+5. Select filters and click 'Search Amenities' button
+   
 # Scenario 3
 1. Import user.sql into phpmyadmin
 2. Import session.sql into phpmyadmin
