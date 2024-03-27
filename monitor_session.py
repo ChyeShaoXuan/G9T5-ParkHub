@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 import os, sys
+from os import environ
 
 import requests
 from invokes import invoke_http
@@ -27,8 +28,10 @@ logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 CORS(app)
 
-user_URL = "http://localhost:5000/user"
-session_URL = "http://localhost:5001/session/trigger"
+# user_URL = "http://localhost:5000/user"
+# session_URL = "http://localhost:5001/session/trigger"
+user_URL = environ.get('user_URL') or "http://localhost:5010/user" 
+session_URL = environ.get('session_URL') or "http://localhost:5006/session/trigger" 
 
 exchangename = "notification_topic" # exchange name
 exchangetype="topic"
