@@ -9,7 +9,7 @@ CORS(app)
 
 userID = 9 #hardcoded later retrieve from stored value
 
-session_getlocation_url=f'http://localhost:5001/session/location/{userID}'
+session_getlocation_url=f'http://localhost:5006/session/location/{userID}'
 nearby_amenities_wrapper_url = 'http://localhost:5011/nearby_amenities_request'
 
 #example:
