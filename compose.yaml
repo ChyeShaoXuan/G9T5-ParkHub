@@ -1,5 +1,8 @@
 version: "3.8"
 
+volumes:
+  rabbitmq_data:
+
 #building all services here
 services:
 
@@ -11,7 +14,7 @@ services:
     build:
       context: ./
       dockerfile: google.Dockerfile
-    image: chyeshaoxuan/googlewrapper:1.0
+    image: jermaineclx/googlewrapper:1.0
     restart: always
     
     ports:
@@ -32,7 +35,7 @@ services:
     build:
       context: ./
       dockerfile: lta.Dockerfile
-    image: chyeshaoxuan/ltawrapper:1.0
+    image: jermaineclx/ltawrapper:1.0
     restart: always
     # environment:
     ports:
@@ -47,7 +50,7 @@ services:
     build:
       context: ./
       dockerfile: ura.Dockerfile
-    image: chyeshaoxuan/urawrapper:1.0
+    image: jermaineclx/urawrapper:1.0
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/ura_rates
@@ -64,7 +67,7 @@ services:
     build:
       context: ./
       dockerfile: searchinfo.Dockerfile
-    image: chyeshaoxuan/searchinfo:1.0
+    image: jermaineclx/searchinfo:1.0
     restart: always
     depends_on:
       - urawrapper
@@ -86,7 +89,7 @@ services:
     build:
       context: ./
       dockerfile: user.Dockerfile
-    image: chyeshaoxuan/user:1.0
+    image: jermaineclx/user:1.0
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/user
@@ -106,7 +109,7 @@ services:
     build:
       context: ./
       dockerfile: session.Dockerfile
-    image: chyeshaoxuan/session:1.0
+    image: jermaineclx/session:1.0
     restart: always
     environment:
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:3306/session
@@ -141,7 +144,7 @@ services:
     build:
       context: ./
       dockerfile: notification.Dockerfile
-    image: chyeshaoxuan/notification:1.0
+    image: jermaineclx/notification:1.0
     restart: always
     depends_on:
       - rabbitmq
@@ -161,7 +164,7 @@ services:
     build:
       context: ./
       dockerfile: monitor_session.Dockerfile
-    image: chyeshaoxuan/monitor_session:1.0
+    image: jermaineclx/monitor_session:1.0
     restart: always
     depends_on:
       - user
