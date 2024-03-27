@@ -2,8 +2,10 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 #request (for query parameters)
 # Run pip install Flask-Session first
 from flask_session import Session
+from flask_cors import CORS, cross_origin
 
 views = Blueprint(__name__, "views")
+CORS(views)
 
 name = 0
 location = "Punggol"
@@ -25,6 +27,10 @@ def register():
 @views.route("/locate-CP")
 def locate_CP():
     return render_template("locateCP.html", username = name, location = location)
+
+@views.route("/extendendtime")
+def extendendtime():
+    return render_template("extendendtime.html")
 
 @views.route("/nearbyAmenities")
 def nearby_Amenities():

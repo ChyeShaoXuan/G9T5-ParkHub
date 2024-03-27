@@ -88,10 +88,14 @@ def find_by_sessionID(userID):
 
 
     if session:
+        data = {
+            "userID": session.userID,
+            "sessionID": session.sessionID
+        }
         return jsonify(
             {
                 "code": 200,
-                "data": session.json()
+                "data": data
             }
         )
     return jsonify(
@@ -168,6 +172,7 @@ def update_session(sessionID):
         data = request.get_json()
         if data['endtime']:
             session.endtime = data['endtime']
+            session.notifAllowed = data['notifAllowed']
             db.session.commit()
             return jsonify(
                 {

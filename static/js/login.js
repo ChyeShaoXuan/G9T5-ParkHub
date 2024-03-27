@@ -45,6 +45,7 @@ async function sendSession(email,password) {
                     alert('Login successful!');
                 } else {
                     // Handle login failure
+                    document.getElementById('message').innerHTML = 'Incorrect details';
                     alert('Login failed. Please check your credentials.');
                 }
             },
