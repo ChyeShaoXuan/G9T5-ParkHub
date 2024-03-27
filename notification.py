@@ -41,7 +41,7 @@ def processEndingSession(endingsession):
     sessionID = endingsession['sessionID']
     message = client.messages.create(
                                 from_='+16822008421',
-                                body="Dear user, your parking session will be ending soon on " + endtime +". To extend your session, please follow this link",
+                                body="Dear user, your parking session will be ending soon on " + endtime +". To extend your session, please follow this link http://localhost:8000/views/extendendtime",
                                 to=phoneNo
                             )
 
