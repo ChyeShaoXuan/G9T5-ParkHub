@@ -15,9 +15,7 @@ app.secret_key = secrets.token_hex(16)
 
 app.permanent_session_lifetime = timedelta(days=30)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "mysql+mysqlconnector://root@localhost:3306/user"
-)
+app.config["SQLALCHEMY_DATABASE_URI"] = environ.get('dbURL')
 # mysql+mysqlconnector://is213@host.docker.internal:3306/user in compose.yaml
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

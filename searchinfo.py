@@ -1,5 +1,5 @@
 #5002 is the port for searchinfo microservice (complex)
-from flask import Flask
+from flask import Flask, request
 import requests
 from flask_cors import CORS
 from math import radians, sin, cos, sqrt, atan2
@@ -69,13 +69,13 @@ def invoke_http(url, method='GET', json=None, **kwargs):
 
     return result
 # deleted function
-# @app.route('/handle_coords',methods=['GET','POST'])
-# def handle_data():
-#    results=request.get_json()
-#    print(results)
-#    invoke_http('http://googlewrapper:5000/google_results',method='POST',json=results)
+@app.route('/handle_coords',methods=['GET','POST'])
+def handle_data():
+   results=request.get_json()
+   print(results)
+   invoke_http('http://googlewrapper:5000/google_results',method='POST',json=results)
 
-#    return results
+   return results
 
 
 
