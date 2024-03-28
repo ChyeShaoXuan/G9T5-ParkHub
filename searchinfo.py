@@ -1,14 +1,16 @@
-from flask import Flask
-
+#5002 is the port for searchinfo microservice (complex)
+from flask import Flask, request
+import requests
 from flask_cors import CORS
 from math import radians, sin, cos, sqrt, atan2
-from invokes import invoke_http
+import json
+
 app = Flask(__name__)
 CORS(app)
 
-googlewrapper_url='http://localhost:5000/google_results'
-ltawrapper_url='http://localhost:5001/lta_results'
-urawrapper_url='http://localhost:5003//ura_rates/'
+# googlewrapper_url='http://localhost:5000/google_results'
+ltawrapper_url='http://ltawrapper:5001/lta_results'
+urawrapper_url='http://urawrapper:5003//ura_rates/'
 
 #helper function to calculate distance between 2 points
 def haversine_distance(lat1, lon1, lat2, lon2):
@@ -28,11 +30,62 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     distance = earth_radius * c
 
     return distance
-@app.route('/search_results')
+
+SUPPORTED_HTTP_METHODS = set([
+    "GET", "OPTIONS", "HEAD", "POST", "PUT", "PATCH", "DELETE"
+])
+
+#helper function for http requests with get and post
+def invoke_http(url, method='GET', json=None, **kwargs):
+    """A simple wrapper for requests methods.
+       url: the url of the http service;
+       method: the http method;
+       data: the JSON input when needed by the http method;
+       return: the JSON reply content from the http service if the call succeeds;
+            otherwise, return a JSON object with a "code" name-value pair.
+    """
+    code = 200
+    result = {}
+
+    try:
+        if method.upper() in SUPPORTED_HTTP_METHODS:
+            r = requests.request(method, url, json = json, **kwargs)
+        else:
+            raise Exception("HTTP method {} unsupported.".format(method))
+    except Exception as e:
+        code = 500
+        result = {"code": code, "message": "invocation of service fails: " + url + ". " + str(e)}
+    if code not in range(200,300):
+        return result
+
+    ## Check http call result
+    if r.status_code != requests.codes.ok:
+        code = r.status_code
+    try:
+        result = r.json() if len(r.content)>0 else ""
+    except Exception as e:
+        code = 500
+        result = {"code": code, "message": "Invalid JSON output from service: " + url + ". " + str(e)}
+
+    return result
+# deleted function
+@app.route('/handle_coords',methods=['GET','POST'])
+def handle_data():
+   results=request.get_json()
+   print(results)
+   invoke_http('http://googlewrapper:5000/google_results',method='POST',json=results)
+
+   return results
+
+
+
+@app.route('/search_results', methods=['GET'])
 def processreturntopcarparks():
     #invoke googlewrapper function and return results
-    google_response=invoke_http(googlewrapper_url,method='GET')
+    google_response=invoke_http('http://googlewrapper:5000/google_results',method='GET')
+    print(google_response)
     google_result=google_response['results']
+    print(google_result)
     #invoke ltawrapperlots and return results
     lta_response=invoke_http(ltawrapper_url,method='GET')
     lta_carparks=lta_response['value']
@@ -45,7 +98,8 @@ def processreturntopcarparks():
     results_list=[]
     for google_car_park in google_result:
         google_lat=google_car_park['geometry']['location']['lat']
-        google_lon=google_car_park['geometry']['location']['lng']   # not sure why the google_result only returns the 1st 2 sets of lat long
+        google_lon=google_car_park['geometry']['location']['lng']  
+        carpark_name=google_car_park['name']
         # print(google_lat,google_lon)
         for lta_carpark in lta_carparks:    
         
@@ -59,19 +113,14 @@ def processreturntopcarparks():
           
              if(haversine_distance(google_lat,google_lon,lta_lat,lta_lon)<20) and lta_carpark['CarParkID'] not in results_list:
        
-                results_list.append({'carparkid':lta_carpark['CarParkID'],'lotsavailable':lta_carpark['AvailableLots']})
+                results_list.append({'google_lat':google_lat,'carparkid':lta_carpark['CarParkID'],'google_lon':google_lon,'carpark_name':carpark_name,'lotsavailable':lta_carpark['AvailableLots']})
 
     for result in results_list:
        ura_response=invoke_http(urawrapper_url+result['carparkid'],method='GET')
        result['rates']=ura_response
-    print(results_list)
-processreturntopcarparks()
-
-
+    return json.dumps(results_list)
+   
     
-
-
-
 
 
 if __name__=='__main__':
