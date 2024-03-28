@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import requests, os
+
 app = Flask(__name__)
 CORS(app)
 
@@ -14,11 +14,10 @@ def nearby_amenities_request():
     coords_lat=data['latitude']
     coords_lng=data['longitude']
     coords_str=str(coords_lat)+","+str(coords_lng)
-    print(coords_str, 666666666666666)
     filters_str = '|'.join(data['selectedFilters'])  # Convert selectedFilters list to comma-separated string
     print(filters_str)
     try:
-        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={}&radius=10000&types={}&key=AIzaSyDuWCAvENcOz861ihyW1EOF8WTJAzKfHfY".format(
+        url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={}&radius=1000&types={}&key=AIzaSyDuWCAvENcOz861ihyW1EOF8WTJAzKfHfY".format(
             coords_str, filters_str)
         
         response = requests.get(url)
