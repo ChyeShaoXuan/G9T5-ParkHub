@@ -30,8 +30,8 @@ CORS(app)
 
 # user_URL = "http://localhost:5000/user"
 # session_URL = "http://localhost:5001/session/trigger"
-user_URL = environ.get('user_URL') or "http://localhost:5010/user" 
-session_URL = environ.get('session_URL') or "http://localhost:5006/session/trigger" 
+user_URL = environ.get('user_URL') or "http://user:5010/user" 
+session_URL = environ.get('session_URL') or "http://session:5006/session/trigger" 
 
 exchangename = "notification_topic" # exchange name
 exchangetype="topic"
