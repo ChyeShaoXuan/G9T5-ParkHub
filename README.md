@@ -15,8 +15,8 @@ token = ******your token here
 user_agent = 'PostmanRuntime/7.36.3'
 cookie = '__nxquid=HOIH8mjcscbjbYyu/M4fhlrXabqh+A==0014'
 
-4. Run app.py by typing python app.py in terminal.
-5. Start wamp/mamp server and navigate to localhost:8001/views.
+4. Run app.py by typing python app.py in terminal. This runs the front-end html and javascript.
+5. Start wamp/mamp server and navigate to localhost:8001/views. 
 6. Run docker compose up --build. This will also enable the functionalities for other scenarios.
 7. Due to the limitations of the URA API, certain places will not return nearby carparks, as URA carparks are limited to certain locations. To get results, use locations in the search bar such as - Pasir Panjang Food Centre, East Coast Lagoon Food Village.
 
