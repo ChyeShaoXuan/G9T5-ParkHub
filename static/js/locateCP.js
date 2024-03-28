@@ -131,7 +131,7 @@ async function getCoordsForAddress(address) {
                                 <div class="flex justify-center"> <!-- Added flex and justify-center to center horizontally -->
                                     <div class="max-w-sm rounded overflow-hidden shadow-lg">
                                         <div class="px-6 py-4">
-                                            Carpark Name:<div class="text-xl mb-2">${carpark['carpark_name']}</div>
+                                            Car park Name:<div class="text-xl mb-2">${carpark['carpark_name']}</div>
                                         </div>
                                         <div class="px-6 pt-4 pb-2">
                                             <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">lots available: ${carpark['lotsavailable']}</span>
@@ -139,7 +139,7 @@ async function getCoordsForAddress(address) {
                                             <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">weekend rate: ${carpark['rates']['weekendrate']}</span>
                                         </div>
                                         <button onclick="confirmSelection('${carpark['carpark_name']}', '${carpark['google_lat']}', '${carpark['google_lon']}', '${carpark['carparkid']}')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-5 border border-2 rounded-full">
-                                            Select Carpark
+                                            Select Car park
                                         </button>
                                     </div>
                                 </div>`;
