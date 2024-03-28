@@ -2,14 +2,14 @@ import time
 import pika
 from os import environ
 
-hostname = "localhost" # default hostname
-port = 5672            # default port
+# hostname = "localhost" # default hostname
+# port = 5672            # default port
 exchangename = "notification_topic" # exchange name
 exchangetype = "topic" # - use a 'topic' exchange to enable interaction
 
 # Instead of hardcoding the values, we can also get them from the environ as shown below
-# hostname = environ.get('hostname') #localhost
-# port = environ.get('port')         #5672 
+hostname = environ.get('hostname') #localhost
+port = environ.get('port')         #5672 
 # exchangename = environ.get('exchangename') #order_topic
 # exchangetype = environ.get('exchangetype') #topic
 # a_queue_name = environ.get('a_queue_name') #Activity_Log
