@@ -9,9 +9,10 @@ To run the search:
    - call url https://www.ura.gov.sg/uraDataService/insertNewToken.action, with
      AccessKey Header in Postman : e61ff773-ba6b-4e89-aeda-759e0bc55604.
     - result of api call will be token.
-    - Enter api_url = 'https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Details'
+    - In the ura_rates.py script, replace the token with your own token in the following lines of code in the file
+    - api_url = 'https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Details'
 access_key = '04560d6a-1e36-4e14-80bf-85616c85510f'
-token = ******your token here
+token = ****** replace your token here
 user_agent = 'PostmanRuntime/7.36.3'
 cookie = '__nxquid=HOIH8mjcscbjbYyu/M4fhlrXabqh+A==0014'
 
